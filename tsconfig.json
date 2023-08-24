@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "target": "es2016",
+      "module": "commonjs",
+      "outDir": "./dist",
+      "rootDir": "./", 
+      "moduleResolution": "node", 
+      "forceConsistentCasingInFileNames": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "esModuleInterop": true,
+      "inlineSourceMap": true
+    },
+    "exclude":[
+      "./node_modules"
+    ],
+    "watch": "./**/*.ts",
+    "execMap": {
+      "ts": "ts-node"
+    }
+  }
