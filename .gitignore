@@ -1,5 +1,6 @@
 #nodejs files
 node_modules
+.env
 .env.development
 .env.production
 .env.qc
