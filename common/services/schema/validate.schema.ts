@@ -12,7 +12,7 @@ class ValidateSchema {
         else {
             error.isValid = false;
             const errors: ErrorObject[] | null | undefined = schema.errors;
-            error.errorMsg = getErrorServices.getError(errors![0]) 
+            error.errorMsg = await getErrorServices.getError(errors![0]) 
         }
         return error;
     })

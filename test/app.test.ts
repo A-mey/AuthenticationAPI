@@ -38,7 +38,7 @@ describe('LOGIN API', function() {
                 expect(res.body.data.message).to.equal("OTP sent successfully");
             }
             catch(e: unknown) {
-                console.log(catchError(e));
+                console.log(await catchError(e));
             }
         });
     
@@ -54,7 +54,7 @@ describe('LOGIN API', function() {
                 expect(res.body.data.message).to.equal("Invalid type for property /EMAILID");
             }
             catch(e: unknown) {
-                console.log(catchError(e));
+                console.log(await catchError(e));
             }
         })
 
@@ -75,7 +75,7 @@ describe('LOGIN API', function() {
                 expect(res.body.data.message).to.equal("User already exists");
             }
             catch(e: unknown) {
-                console.log(catchError(e));
+                console.log(await catchError(e));
             }
         })
 
@@ -95,7 +95,7 @@ describe('LOGIN API', function() {
                 expect(res.body.data.data).to.have.keys(['id','EMAILID','FIRSTNAME','LASTNAME'])
             }
             catch(e: unknown) {
-                console.log(catchError(e));
+                console.log(await catchError(e));
             }
         })
     });
@@ -107,7 +107,7 @@ describe('LOGIN API', function() {
                 // expect(otpServices.createOTP("amey2p@gmailcom").length).to.be.an('string');
             }
             catch(e: unknown) {
-                console.log(catchError(e));
+                console.log(await catchError(e));
             }
         })
     

@@ -719,3 +719,10 @@
 [32m  label: 'Label🏷️',[39m
 [32m  timestamp: 'Aug-27-2023 17:01:39'[39m
 [32m}[39m
+[32m{[39m
+[32m  meta: {},[39m
+[32m  level: 'info',[39m
+[32m  message: 'HTTP POST /createOTP',[39m
+[32m  label: 'Label🏷️',[39m
+[32m  timestamp: 'Aug-27-2023 17:44:35'[39m
+[32m}[39m

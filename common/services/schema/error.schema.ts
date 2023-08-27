@@ -1,9 +1,10 @@
 import { ErrorObject } from "ajv";
+import { catchError } from "../../helpers/catch.helper";
 
 class SchemaError {
     constructor() {}
 
-    getError(error: ErrorObject) {
+    getError = async (error: ErrorObject) => {
         let err: string = "";
         try {
             switch(error.keyword) {
@@ -24,7 +25,7 @@ class SchemaError {
             }
         }
         catch(e) {
-            console.log(e);
+            console.log(await catchError(e));
             err = "Unknown error"
         }
         return err;

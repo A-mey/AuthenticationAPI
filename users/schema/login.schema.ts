@@ -1,12 +1,7 @@
-import { CommonSchema } from "../../common/schema/schema";
-
-class LoginSchema extends CommonSchema{
+class LoginSchema {
 
 
-    constructor() {
-        super()
-        // this.ajv = super.getAjv()
-    }
+    constructor() { }
 
     public readonly schema = {
         "createOTP" : {
@@ -20,6 +15,7 @@ class LoginSchema extends CommonSchema{
                 }
             },
         },
+
         "validateOTP": {
             "type": "object",
             "additionalProperties": false,
@@ -61,6 +57,7 @@ class LoginSchema extends CommonSchema{
                 }
             },
         },
+
         "loginUser": {
             "type": "object",
             "additionalProperties": false,
@@ -80,15 +77,6 @@ class LoginSchema extends CommonSchema{
             },
         }
     }
-
-
-    // public registerUserSchemaValidate = this.ajv.compile(this.registerUserSchema)
-
-    // public validateOTPSchemaValidate = this.ajv.compile(this.validateOTPSchema)
-
-    // public createOTPSchemaValidate = this.ajv.compile(this.createOTPSchema);
-
-    // public loginUserSchemaValidate = this.ajv.compile(this.loginUserSchema);
 }
 
 export default new LoginSchema();

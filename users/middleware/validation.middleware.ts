@@ -1,10 +1,11 @@
 import express, { NextFunction, Request } from "express";
 import LoginSchema from "../schema/login.schema";
 // import validateSchemaServices from "../../common/services/validateSchema.services";
-import ValidateSchema from "../../common/schema/validate.schema"
-import compileSchema from "../../common/schema/compile.schema";
+import ValidateSchema from "../../common/services/schema/validate.schema"
+import compileSchema from "../../common/services/schema/compile.schema";
+import { CommonSchemaValidator } from "../../common/interfaces/schemaValidation.interface";
 
-class LoginValidationMiddleware {
+class LoginValidationMiddleware implements CommonSchemaValidator{
     
     checkSchema = async (req: Request, res: express.Response, next: NextFunction) => {
         const origin: (keyof typeof LoginSchema.schema) = req.originalUrl.replace("/", "") as (keyof typeof LoginSchema.schema);

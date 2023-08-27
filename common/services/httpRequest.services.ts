@@ -2,18 +2,22 @@ import axios, { AxiosRequestConfig} from 'axios';
 import { catchError } from '../helpers/catch.helper';
 
 class HttpRequestService {
-    async getRequest(url: string): Promise<unknown> {
+    async getRequest(url: string): Promise<response | undefined> {
         const config: AxiosRequestConfig = {
             method: 'get',
             url: url,
             data: {}
         };
-        try {
-            return await axios(config);
-        }
-        catch(e: unknown) {
-            console.log(await catchError(e));
-        }
+        let res: response | undefined;
+            try 
+            {
+                res = await axios(config);
+                // return _data.data;
+            }
+            catch(e: unknown) {
+                console.log(await catchError(e));
+            }
+            return res;
     }
 
     async postRequest(url: string, data: object): Promise<response | undefined> {

@@ -1,4 +1,5 @@
-import { KafkaJSClass } from './kakfa.config';
+import { catchError } from '../../helpers/catch.helper';
+import { KafkaJSClass } from './config.kakfa';
 
 export class KafkaProducer extends KafkaJSClass {
     public readonly producer = this.kafka.producer();
@@ -14,8 +15,8 @@ export class KafkaProducer extends KafkaJSClass {
             await this.producer.connect();
             console.log("producer connected")
         }
-        catch(e) {
-            console.log(e);
+        catch(e: unknown) {
+            console.log(await catchError(e));
         }
     }
 

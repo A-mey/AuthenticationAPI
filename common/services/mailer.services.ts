@@ -1,16 +1,11 @@
-import {KafkaProducer} from './kafka/kafka.producer'
+import {StreamService} from './kafka/stream.kafka'
 
-export class MailService extends KafkaProducer {
+export class MailService {
+  stream: StreamService = new StreamService(process.env.MAIL_TOPIC!);
 
-  constructor() {
-    super(process.env.MAIL_TOPIC!);
-  }
+  constructor() { }
 
   async send(mailBody: mailBody): Promise<void> {
-    const message = JSON.stringify(mailBody)
-    await super.connect();
-    await super.send(message);
-    await super.disconnect();
+    await this.stream.stream(mailBody);
   }
-
 }

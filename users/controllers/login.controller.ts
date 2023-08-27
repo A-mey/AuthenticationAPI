@@ -1,4 +1,3 @@
-// we import express to add types to the request/response objects from our controller functions
 import express from 'express';
 
 // we import our newly created user services
@@ -8,12 +7,9 @@ import loginHttpService from '../services/login.http.service';
 // we use debug with a custom context as described in Part 1
 // import debug from 'debug';
 
-// import {OtpObject} from '../../common/types/otpObject.types'
-
 import otpService from '../../common/services/otp.services';
-
-// import {Pill} from '../types/pill.type'
 import { CreateUser } from '../types/create.user.type';
+import { catchError } from '../../common/helpers/catch.helper';
 // import { Response } from '../../common/types/response.types';
 
 // const log: debug.IDebugger = debug('app:users-controller');
@@ -53,8 +49,8 @@ class UsersController {
             else {
                 res.status(400).json({success: false, code: 400, data: {message: "Something went wrong"}});
             }
-        }).catch((error) => {
-            console.log(error.message)
+        }).catch(async (error: unknown) => {
+            console.log(await catchError(error))
             res.status(400).json({success: false, code: 400, data: {message: error}});
         })
     }
