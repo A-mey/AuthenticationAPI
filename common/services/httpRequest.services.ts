@@ -1,8 +1,9 @@
 import axios, { AxiosRequestConfig} from 'axios';
+import { catchError } from '../helpers/catch.helper';
 
 class HttpRequestService {
-    async getRequest(url: string): Promise<any> {
-        let config: AxiosRequestConfig = {
+    async getRequest(url: string): Promise<unknown> {
+        const config: AxiosRequestConfig = {
             method: 'get',
             url: url,
             data: {}
@@ -10,13 +11,13 @@ class HttpRequestService {
         try {
             return await axios(config);
         }
-        catch(e: any) {
-            return e.message;
+        catch(e: unknown) {
+            console.log(await catchError(e));
         }
     }
 
-    async postRequest(url: string, data: object): Promise<any> {
-            let config: AxiosRequestConfig = {
+    async postRequest(url: string, data: object): Promise<response | undefined> {
+            const config: AxiosRequestConfig = {
                 method: 'post',
                 url: url,
                 data: JSON.stringify(data),
@@ -24,14 +25,16 @@ class HttpRequestService {
                     'Content-Type': 'application/json'
                   }
             };
+            let res: response | undefined;
             try 
             {
-                let _data = await axios(config);
-                return _data.data;
+                res = await axios(config);
+                // return _data.data;
             }
-            catch(e: any) {
-                return e;
+            catch(e: unknown) {
+                console.log(await catchError(e));
             }
+            return res;
     }
 }
 

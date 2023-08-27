@@ -6,25 +6,25 @@ import loginService from '../services/login.service';
 import loginHttpService from '../services/login.http.service';
 
 // we use debug with a custom context as described in Part 1
-import debug from 'debug';
+// import debug from 'debug';
 
-import {OtpObject} from '../../common/types/otpObject.types'
+// import {OtpObject} from '../../common/types/otpObject.types'
 
 import otpService from '../../common/services/otp.services';
 
-import {Pill} from '../types/pill.type'
+// import {Pill} from '../types/pill.type'
 import { CreateUser } from '../types/create.user.type';
-import { Response } from '../../common/types/response.types';
+// import { Response } from '../../common/types/response.types';
 
-const log: debug.IDebugger = debug('app:users-controller');
+// const log: debug.IDebugger = debug('app:users-controller');
 class UsersController {
 
     async sendOTP(req: express.Request, res: express.Response) {
-        let emailId = req.body.EMAILID;
+        const emailId = req.body.EMAILID;
         const otpObject: OtpObject = await otpService.createOTP(emailId);
         await otpService.sendOtpMail(emailId, otpObject.otp!);
-        let status = 200;
-        let response: Response = {success: true, code: status, data: {message: "OTP sent successfully", data: {fullHash: otpObject.fullHash}}};
+        const status = 200;
+        const response: response = {success: true, code: status, data: {message: "OTP sent successfully", data: {fullHash: otpObject.fullHash}}};
         res.status(status).json(response);
     }
 
@@ -39,12 +39,15 @@ class UsersController {
     }
 
     async createUser(req: express.Request, res: express.Response) {
-        let emailId = req.body.EMAILID;
-        let password = req.body.PASSWORD;
-        let encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
-        let userData: CreateUser = {EMAILID: req.body.EMAILID, FIRSTNAME: req.body.FIRSTNAME, LASTNAME: req.body.LASTNAME }
+        const emailId = req.body.EMAILID;
+        const password = req.body.PASSWORD;
+        const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
+        const userData: CreateUser = {EMAILID: req.body.EMAILID, FIRSTNAME: req.body.FIRSTNAME, LASTNAME: req.body.LASTNAME }
         return Promise.all([loginHttpService.storeUserData(userData), loginHttpService.createNewAuth(encryptedPill)]).then((data) => {
-            if (data[0].code == 201 && data[1].code == 201) {
+            if (!data || !data.length) {
+                res.status(400).json({success: false, code: 400, data: {message: "Something went wrong"}});
+            }
+            else if (data[0]!.code == 201 && data[1]!.code == 201) {
                 res.status(201).json({success: true, code: 201, data: {message: "User created successfully"}});
             }
             else {
@@ -57,13 +60,13 @@ class UsersController {
     }
 
     async loginUser(req: express.Request, res: express.Response) {
-        let emailId = req.body.EMAILID;
-        let password = req.body.password;
-        let encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
-        let authenticateUser = await loginHttpService.checkAuth(encryptedPill);
-        if (authenticateUser.code == 200) {
+        const emailId = req.body.EMAILID;
+        const password = req.body.password;
+        const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
+        const authenticateUser = await loginHttpService.checkAuth(encryptedPill);
+        if (authenticateUser?.code == 200) {
             // res.status(200).send();
-            let userData = await loginHttpService.getUserDetails(emailId);
+            const userData = await loginHttpService.getUserDetails(emailId);
             if (userData){
                 res.status(200).json({success: true, code: 200, data: {message: "Logged in successfully", data: userData.data!.data!}});
             }

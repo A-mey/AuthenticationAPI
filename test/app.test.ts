@@ -3,11 +3,13 @@ import {app, server} from '../app';
 import { expect } from 'chai';
 import supertest from 'supertest';
 
-import { Response } from '../common/types/response.types';
+import { catchError } from '../common/helpers/catch.helper';
+
+// import { Response } from '../common/types/response.types';
 
 import otpServices from '../common/services/otp.services';
 
-import {MailService} from '../common/services/mailer.services';
+// import {MailService} from '../common/services/mailer.services';
 
 describe('LOGIN API', function() {
     // let request: supertest.SuperAgentTest;
@@ -35,8 +37,8 @@ describe('LOGIN API', function() {
                 expect(res.body).to.be.an('object');
                 expect(res.body.data.message).to.equal("OTP sent successfully");
             }
-            catch(e: any) {
-                console.log(e.message);
+            catch(e: unknown) {
+                console.log(catchError(e));
             }
         });
     
@@ -51,8 +53,8 @@ describe('LOGIN API', function() {
                 expect(res.body).to.be.an('Response');
                 expect(res.body.data.message).to.equal("Invalid type for property /EMAILID");
             }
-            catch(e: any) {
-                console.log(e.message);
+            catch(e: unknown) {
+                console.log(catchError(e));
             }
         })
 
@@ -72,8 +74,8 @@ describe('LOGIN API', function() {
                 expect(res.body).to.be.an('Response');
                 expect(res.body.data.message).to.equal("User already exists");
             }
-            catch(e: any) {
-                console.log(e.message);
+            catch(e: unknown) {
+                console.log(catchError(e));
             }
         })
 
@@ -92,8 +94,8 @@ describe('LOGIN API', function() {
                 expect(res.body.data.message).to.equal("Logged in successfully");
                 expect(res.body.data.data).to.have.keys(['id','EMAILID','FIRSTNAME','LASTNAME'])
             }
-            catch(e: any) {
-                console.log(e.message);
+            catch(e: unknown) {
+                console.log(catchError(e));
             }
         })
     });
@@ -104,8 +106,8 @@ describe('LOGIN API', function() {
                 expect(otpServices.createOTP("amey2p@gmailcom")).to.be.an('string').that.have.lengthOf(6);
                 // expect(otpServices.createOTP("amey2p@gmailcom").length).to.be.an('string');
             }
-            catch(e: any) {
-                console.log(e.message);
+            catch(e: unknown) {
+                console.log(catchError(e));
             }
         })
     

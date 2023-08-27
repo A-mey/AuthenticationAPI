@@ -2,9 +2,6 @@ import express, {Request, NextFunction} from 'express'
 
 // import { CommonSchema } from "./schema";
 import ValidateSchema from './validate.schema'
-import { errorMessageObject } from '../types/errorMsgObject.types';
-
-import { Response } from "../../common/types/response.types";
 import { ValidateFunction } from 'ajv';
 
 
@@ -17,7 +14,7 @@ export abstract class ValidationMiddleware{
         if (errorRes.isValid) {
             next();
           } else {
-            const response: Response = {success: false, code: 400, data: {message: errorRes.errorMsg}}
+            const response: response = {success: false, code: 400, data: {message: errorRes.errorMsg}}
             res.status(400).json(response);
         }
     }

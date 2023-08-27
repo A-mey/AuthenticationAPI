@@ -1,4 +1,4 @@
 export interface httpReq {
-    get: () => Promise<any>;
-    post: (url: string, data: any) => Promise<any>;
+    get: () => Promise<unknown>;
+    post: (url: string, data: object) => Promise<unknown>;
 }

@@ -13,7 +13,7 @@ import {CommonRoutesConfig} from './common/common.routes.config';
 import {LoginRoutes} from './users/routes/login.routes.config';
 // import { SipSQL } from './common/services/DAL/sql.service.sip';
 // import { SQLService } from './common/services/DAL/sql.service';
-import {validationErrorMiddleware} from './common/error/validationErrorMiddleware.error';
+// import {validationErrorMiddleware} from './common/error/validationErrorMiddleware.error';
 import debug from 'debug';
 import helmet from 'helmet';
 
@@ -94,7 +94,7 @@ app.get('/', (_req: express.Request, res: express.Response) => {
 });
 
 app.use(helmet());
-app.use(validationErrorMiddleware);
+// app.use(validationErrorMiddleware);
 
 
 server.listen(port, () => {

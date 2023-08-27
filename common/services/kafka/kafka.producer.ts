@@ -19,11 +19,12 @@ export class KafkaProducer extends KafkaJSClass {
         }
     }
 
-    async send(message: string) {
+    async send(message: unknown) {
+        const data = message as string;
         await this.producer.send({
             topic: this.topic,
             messages: [
-              { value: message },
+              { value: data },
             ],
           })
     }

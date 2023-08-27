@@ -1,4 +1,5 @@
-export type Pill =  {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type Pill =  {
     USERNAMEHASH: string,
     AUTHPILL: string
 }

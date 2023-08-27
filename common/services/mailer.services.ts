@@ -6,9 +6,10 @@ export class MailService extends KafkaProducer {
     super(process.env.MAIL_TOPIC!);
   }
 
-  async send(mailBody: any): Promise<void> {
+  async send(mailBody: mailBody): Promise<void> {
+    const message = JSON.stringify(mailBody)
     await super.connect();
-    await super.send(JSON.stringify(mailBody));
+    await super.send(message);
     await super.disconnect();
   }
 

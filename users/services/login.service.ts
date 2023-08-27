@@ -1,9 +1,6 @@
 import OtpService from '../../common/services/otp.services'
-import {OtpObject} from '../../common/types/otpObject.types'
 import EncryptionService from '../../common/services/encryption.services'
-import {Pill} from '../types/pill.type'
-import { CreateUser } from '../types/create.user.type'
-
+// import {Pill} from '../types/pill.type'
 
 class LoginService {
 
@@ -19,17 +16,17 @@ class LoginService {
     async createAuthPill(emailId: string, password: string): Promise<Pill> {
         // let secretKey = process.env.SECRETKEY!
         // let customSalt = await EncryptionService.createSalt();
-        let customSalt = await EncryptionService.md5Encryption(password);
-        let key = await EncryptionService.scrypt(customSalt, this.secretKey);
-        let encryptedData = await EncryptionService.aesEencryption(key, password);
-        let pill = customSalt + encryptedData
-        let passwordSalt = (await EncryptionService.sha256Encryption(emailId + this.secretKey)).slice(-22);
-        let passwordHash = (await EncryptionService.scrypt(passwordSalt, this.secretKey)).slice(-40);
-        let usernameHash = await EncryptionService.sha256Encryption(emailId);
+        const customSalt = await EncryptionService.md5Encryption(password);
+        const key = await EncryptionService.scrypt(customSalt, this.secretKey);
+        const encryptedData = await EncryptionService.aesEencryption(key, password);
+        const pill = customSalt + encryptedData
+        const passwordSalt = (await EncryptionService.sha256Encryption(emailId + this.secretKey)).slice(-22);
+        const passwordHash = (await EncryptionService.scrypt(passwordSalt, this.secretKey)).slice(-40);
+        const usernameHash = await EncryptionService.sha256Encryption(emailId);
         // let data: Pill = {usernameHash: usernameHash, passwordHash: passwordHash, pill: pill};
-        let userAuth = await EncryptionService.hmac(key, usernameHash+passwordHash);
-        let authPill = userAuth + pill;
-        let data = {
+        const userAuth = await EncryptionService.hmac(key, usernameHash+passwordHash);
+        const authPill = userAuth + pill;
+        const data = {
             AUTHPILL: authPill,
             USERNAMEHASH: usernameHash
         }

@@ -1,12 +1,10 @@
-import { errorMessageObject } from "../types/errorMsgObject.types";
 import getErrorServices from "./error.schema";
 import { ErrorObject, ValidateFunction } from "ajv";
-import express from "express";
 
 class ValidateSchema {
-    validateSchema = (async(req: express.Request, schema: ValidateFunction<unknown>) => {
+    validateSchema = (async(obj: object, schema: ValidateFunction<unknown>) => {
         const error: errorMessageObject = {isValid: false, errorMsg: ""};
-        const isValid = schema(req);
+        const isValid = schema(obj);
         if (isValid) {
             // console.log('Data is valid');
             error.isValid = true

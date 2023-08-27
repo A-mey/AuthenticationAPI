@@ -1,7 +1,4 @@
 import otpGenerator from 'otp-generator';
-// const crypto       = require("crypto");
-// import crypto from 'crypto';
-import {OtpObject} from '../types/otpObject.types'
 import {MailService} from './mailer.services';
 import EncryptionService from './encryption.services';
 
