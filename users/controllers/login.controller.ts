@@ -9,7 +9,8 @@ import loginHttpService from '../services/login.http.service';
 
 import otpService from '../../common/services/otp.services';
 import { CreateUser } from '../types/create.user.type';
-import { catchError } from '../../common/helpers/catch.helper';
+// import { catchError } from '../../common/helpers/catch.helper';
+import { User } from '../types/user.type';
 // import { Response } from '../../common/types/response.types';
 
 // const log: debug.IDebugger = debug('app:users-controller');
@@ -38,21 +39,20 @@ class UsersController {
         const emailId = req.body.EMAILID;
         const password = req.body.PASSWORD;
         const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
-        const userData: CreateUser = {EMAILID: req.body.EMAILID, FIRSTNAME: req.body.FIRSTNAME, LASTNAME: req.body.LASTNAME }
-        return Promise.all([loginHttpService.storeUserData(userData), loginHttpService.createNewAuth(encryptedPill)]).then((data) => {
-            if (!data || !data.length) {
-                res.status(400).json({success: false, code: 400, data: {message: "Something went wrong"}});
-            }
-            else if (data[0]!.code == 201 && data[1]!.code == 201) {
-                res.status(201).json({success: true, code: 201, data: {message: "User created successfully"}});
+        const userData: User = {EMAILID: req.body.EMAILID, FIRSTNAME: req.body.FIRSTNAME, LASTNAME: req.body.LASTNAME }
+        const createUserData: CreateUser = {USER: userData, AUTH: encryptedPill};
+        const data = await loginHttpService.storeUserData(createUserData);
+        if (data!== undefined) {
+            if (data.code === 201) {
+                return res.status(201).json({success: true, code: 201, data: {message: "User created successfully"}});
             }
             else {
-                res.status(400).json({success: false, code: 400, data: {message: "Something went wrong"}});
+                return res.status(400).json({success: false, code: 400, data: {message: "Something went wrong"}});
             }
-        }).catch(async (error: unknown) => {
-            console.log(await catchError(error))
-            res.status(400).json({success: false, code: 400, data: {message: error}});
-        })
+        }
+        else {
+            return res.status(400).json({success: false, code: 400, data: {message: "Something went wrong"}});
+        }
     }
 
     async loginUser(req: express.Request, res: express.Response) {

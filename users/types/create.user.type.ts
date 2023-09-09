@@ -1,6 +1,6 @@
+import { User } from "./user.type";
+
 export type CreateUser = {
-    EMAILID: string;
-    FIRSTNAME: string;
-    LASTNAME?: string;
-    PERMISSIONLEVEL?: number;
+    USER: User;
+    AUTH: Pill;
 }
