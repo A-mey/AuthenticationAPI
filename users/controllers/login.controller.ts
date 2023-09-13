@@ -39,11 +39,13 @@ class UsersController {
         const emailId = req.body.EMAILID;
         const password = req.body.PASSWORD;
         const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
-        const userData: User = {EMAILID: req.body.EMAILID, FIRSTNAME: req.body.FIRSTNAME, LASTNAME: req.body.LASTNAME }
+        const userData: User = {TITLE: req.body.TITLE, EMAILID: req.body.EMAILID, FIRSTNAME: req.body.FIRSTNAME, LASTNAME: req.body.LASTNAME, GENDER: req.body.GENDER, DOB: req.body.DOB}
         const createUserData: CreateUser = {USER: userData, AUTH: encryptedPill};
         const data = await loginHttpService.storeUserData(createUserData);
+        console.log("UsersController:createUser", data);
         if (data!== undefined) {
             if (data.code === 201) {
+                console.log("2")
                 return res.status(201).json({success: true, code: 201, data: {message: "User created successfully"}});
             }
             else {

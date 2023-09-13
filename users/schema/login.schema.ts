@@ -36,13 +36,20 @@ class LoginSchema {
         "registerUser": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["EMAILID", "PASSWORD", "FIRSTNAME", "FLAG"],
+            "required": ["EMAILID", "PASSWORD", "FIRSTNAME", "GENDER", "DOB"],
             "properties" : {
+                "TITLE": {
+                    "type": "string",
+                    "enum": ["Mr", "Ms", "Mrs"]
+                },
                 "EMAILID": {
                     "type": "string",
                     "format": "email"
                 },
                 "PASSWORD": {
+                    "type": "string",
+                },
+                "PASSWORD2": {
                     "type": "string",
                 },
                 "FIRSTNAME": {
@@ -51,9 +58,12 @@ class LoginSchema {
                 "LASTNAME": {
                     "type": "string"
                 },
-                "FLAG": {
+                "GENDER": {
                     "type": "string",
-                    "enum": ["REGISTER"]
+                    "enum": ["M", "F"]
+                },
+                "DOB": {
+                    "type": "string",
                 }
             },
         },

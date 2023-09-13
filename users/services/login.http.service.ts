@@ -7,7 +7,7 @@ import { CreateUser } from '../types/create.user.type'
 class LoginHTTPService {
 
     async storeUserData(CreateUser: CreateUser): Promise<response | undefined> {
-        const url: string = process.env.storeUserDataURL!;  
+        const url: string = process.env.storeUserDataURL!;
         return await HttpRequestService.postRequest(url, CreateUser);
     }
 
@@ -27,7 +27,9 @@ class LoginHTTPService {
         const data = {
             "EMAILID": emailId
         }
-        return await HttpRequestService.postRequest(url, data);
+        const _data = await HttpRequestService.postRequest(url, data);
+        console.log("LoginHTTPService::checkExistingUser: ", _data)
+        return _data;
     }
 
     async createNewAuth(encryptedPill: Pill): Promise<response | undefined> {
