@@ -39,8 +39,8 @@ class LoginSchema {
             "required": ["EMAILID", "PASSWORD", "FIRSTNAME", "GENDER", "DOB"],
             "properties" : {
                 "TITLE": {
-                    "type": "string",
-                    "enum": ["Mr", "Ms", "Mrs"]
+                    "type": "number",
+                    "enum": [1, 2, 3]
                 },
                 "EMAILID": {
                     "type": "string",
@@ -59,8 +59,8 @@ class LoginSchema {
                     "type": "string"
                 },
                 "GENDER": {
-                    "type": "string",
-                    "enum": ["M", "F"]
+                    "type": "number",
+                    "enum": [1, 2]
                 },
                 "DOB": {
                     "type": "string",
