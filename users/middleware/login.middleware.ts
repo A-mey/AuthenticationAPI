@@ -18,7 +18,7 @@ class LoginMiddleware {
                 res.status(400).json({success: false, code: 400, data: {message: data.data.message} })
             }
         }
-        else if (req.originalUrl == '/registerUser') {
+        else if (req.originalUrl == '/createOTP') {
             if (data.code == 200) {
                 res.status(409).json({success: false, code: 409, data: {message: data.data.message}})
             }

@@ -71,7 +71,7 @@ class LoginSchema {
         "loginUser": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["EMAILID", "PASSWORD", "FLAG"],
+            "required": ["EMAILID", "PASSWORD"],
             "properties" : {
                 "EMAILID": {
                     "type": "string",
@@ -79,10 +79,6 @@ class LoginSchema {
                 },
                 "PASSWORD": {
                     "type": "string",
-                },
-                "FLAG": {
-                    "type": "string",
-                    "enum": ["LOGIN"]
                 }
             },
         }

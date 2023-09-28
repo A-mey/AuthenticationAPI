@@ -19,7 +19,7 @@ class UsersController {
     async sendOTP(req: express.Request, res: express.Response) {
         const emailId = req.body.EMAILID;
         const otpObject: OtpObject = await otpService.createOTP(emailId);
-        await otpService.sendOtpMail(emailId, otpObject.otp!);
+        // await otpService.sendOtpMail(emailId, otpObject.otp!);
         const status = 200;
         const response: response = {success: true, code: status, data: {message: "OTP sent successfully", data: {fullHash: otpObject.fullHash}}};
         res.status(status).json(response);
@@ -27,12 +27,17 @@ class UsersController {
 
     async validateOTP(req: express.Request, res: express.Response) {
         const validation = await loginService.otpValidation(req.body.EMAILID, req.body.HASH, req.body.OTP)
-        if (validation == true) {
-            res.status(204).json({success: true, code: 204, data: {message: "OTP matched"}});
+        console.log("validation", validation);
+        let status: number;
+        let response: response;
+        if (validation === true) {
+            status = 200;
+            response = {success: true, code: status, data: {message: "OTP matched"}};
+        } else {
+            status = 401;
+            response = {success: false, code: status, data: {message: "OTP did not match"}};
         }
-        else if (validation == false) {
-            res.status(401).json({success: false, code: 401, data: {message: "OTP did not match"}});
-        }
+        res.status(status).json(response);
     }
 
     async createUser(req: express.Request, res: express.Response) {

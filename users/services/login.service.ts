@@ -5,15 +5,17 @@ import EncryptionService from '../../common/services/encryption.services'
 class LoginService {
 
     private secretKey = process.env.SECRETKEY!
-    async otpValidation(emailId: string, hash: string, otp: string) {
-        return OtpService.verifyOTP(emailId, hash, otp);
+    otpValidation = async (emailId: string, hash: string, otp: string): Promise<boolean> => {
+        const response =  await OtpService.verifyOTP(emailId, hash, otp);
+        console.log("response", response);
+        return response;
     }
 
-    async createOTP(email: string): Promise<OtpObject> {
+    createOTP = async (email: string): Promise<OtpObject> => {
         return OtpService.createOTP(email);
     }
 
-    async createAuthPill(emailId: string, password: string): Promise<Pill> {
+    createAuthPill = async (emailId: string, password: string): Promise<Pill> => {
         // let secretKey = process.env.SECRETKEY!
         // let customSalt = await EncryptionService.createSalt();
         const customSalt = await EncryptionService.md5Encryption(password);
