@@ -7,7 +7,7 @@ import { getUserDTO } from '../dto/get.user.dto';
 class LoginMiddleware {
     checkExistingUser = async (req: Request, res: Response, next: NextFunction) => {
         const emailIdObject: getUserDTO = { EMAILID: req.body.EMAILID };
-        const data = await loginHttpService.checkExistingUser(req.body.EMAILID);
+        const data = await loginHttpService.checkExistingUser(emailIdObject);
         console.log("LoginMiddleware::checkExistingUser: ", data);
         if (!data) {
                 return res.status(400).json({success: false, code: 400, data: {message: "something went wrong"} })
