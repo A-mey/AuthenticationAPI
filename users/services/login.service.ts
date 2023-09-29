@@ -17,15 +17,23 @@ class LoginService {
         // let secretKey = process.env.SECRETKEY!
         // let customSalt = await EncryptionService.createSalt();
         const customSalt = await EncryptionService.md5Encryption(password);
+        console.log(customSalt, "customSalt");
         const key = await EncryptionService.scrypt(customSalt, this.secretKey);
+        console.log(key, "key");
         const encryptedData = await EncryptionService.aesEencryption(key, password);
-        const pill = customSalt + encryptedData
+        console.log(encryptedData, "encryptedData");
+        const pill = customSalt + encryptedData;
+        console.log(pill, "pill");
         const passwordSalt = (await EncryptionService.sha256Encryption(emailId + this.secretKey)).slice(-22);
+        console.log(passwordSalt, "passwordSalt");
         const passwordHash = (await EncryptionService.scrypt(passwordSalt, this.secretKey)).slice(-40);
+        console.log(passwordHash, "passwordHash");
         const usernameHash = await EncryptionService.sha256Encryption(emailId);
         // let data: Pill = {usernameHash: usernameHash, passwordHash: passwordHash, pill: pill};
         const userAuth = await EncryptionService.hmac(key, usernameHash+passwordHash);
+        console.log(userAuth, "userAuth");
         const authPill = userAuth + pill;
+        console.log(authPill, "authPill");
         const data = {
             AUTHPILL: authPill,
             USERNAMEHASH: usernameHash

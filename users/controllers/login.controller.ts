@@ -11,6 +11,7 @@ import otpService from '../../common/services/otp.services';
 import { CreateUser } from '../types/create.user.type';
 // import { catchError } from '../../common/helpers/catch.helper';
 import { User } from '../types/user.type';
+import { catchError } from '../../common/helpers/catch.helper';
 // import { Response } from '../../common/types/response.types';
 
 // const log: debug.IDebugger = debug('app:users-controller');
@@ -59,7 +60,7 @@ class UsersController {
 
     async loginUser(req: express.Request, res: express.Response) {
         const emailId = req.body.EMAILID;
-        const password = req.body.password;
+        const password = req.body.PASSWORD;
         const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
         const authenticateUser = await loginHttpService.checkAuth(encryptedPill);
         if (authenticateUser?.code == 200) {
@@ -74,6 +75,17 @@ class UsersController {
         }
         else {
             res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
+        }
+    }
+
+    encryptUserData = async(req: express.Request, res: express.Response) => {
+        try {
+            const emailId = req.body.EMAILID;
+            const password = req.body.PASSWORD;
+            const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
+            res.status(200).json({success: true, code: 200, data: {message: "Done", data: encryptedPill}});
+        } catch(e: unknown) {
+            console.log(catchError(e));
         }
     }
 }

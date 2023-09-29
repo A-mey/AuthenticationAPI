@@ -33,6 +33,10 @@ export class LoginRoutes extends CommonRoutesConfig {
                 LoginMiddleware.checkExistingUser,
                 LoginController.loginUser
             )
+        this.app.route('/encryptData')
+            .post(
+                LoginController.encryptUserData
+            )
         return this.app;
     }
 }
