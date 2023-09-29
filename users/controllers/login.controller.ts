@@ -9,7 +9,6 @@ import loginHttpService from '../services/login.http.service';
 
 import otpService from '../../common/services/otp.services';
 import { CreateUserDTO } from '../dto/create.user.dto';
-// import { catchError } from '../../common/helpers/catch.helper';
 import { User } from '../types/user.type';
 import { catchError } from '../../common/helpers/catch.helper';
 import { OtpObject } from '../../common/types/otpObject.types';
