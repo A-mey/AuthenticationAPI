@@ -42,14 +42,14 @@ class LoginService {
         return data;
     }
 
-    decryptAuthPill = async() => {
-        // const customSalt = await EncryptionService.md5Encryption(password);
-        // const encryptedData = pill.substring(customSalt.length, pill.length);
-        // const key = await EncryptionService.scrypt(customSalt, this.secretKey);
-        // const mySecret = await EncryptionService.aesEencryption(key, encryptedData);
-        // return mySecret;
-        const oldPassword = await EncryptionService.aesDecryption("e2e73172fbb15e03f336d85a7129e47a6f23e5643fccf43a81c8ad644e16d89f", "U2FsdGVkX18Yiso3Yvquw+g+YaIVFEGkykwzmk7Nn9g=");
-        return oldPassword;
+    decryptAuthPill = async(pill: string, password: string) => {
+        const customSalt = await EncryptionService.md5Encryption(password);
+        const encryptedData = pill.substring(customSalt.length, pill.length);
+        const key = await EncryptionService.scrypt(customSalt, this.secretKey);
+        const mySecret = await EncryptionService.aesDecryption(key, encryptedData);
+        return mySecret;
+        // const oldPassword = await EncryptionService.aesDecryption("e2e73172fbb15e03f336d85a7129e47a6f23e5643fccf43a81c8ad644e16d89f", "U2FsdGVkX18Yiso3Yvquw+g+YaIVFEGkykwzmk7Nn9g=");
+        // return oldPassword;
     }
 }
 

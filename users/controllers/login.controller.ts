@@ -90,11 +90,11 @@ class UsersController {
         }
     }
 
-    decryptUserData = async(_req: express.Request, res: express.Response) => {
+    decryptUserData = async(req: express.Request, res: express.Response) => {
         try {
-            // const pill = req.body.PILL;
-            // const password = req.body.PASSWORD;
-            const storedPassword: string = await loginService.decryptAuthPill();
+            const pill = req.body.PILL;
+            const password = req.body.PASSWORD;
+            const storedPassword: string = await loginService.decryptAuthPill(pill, password);
             res.status(200).json({success: true, code: 200, data: {message: "Done", data: storedPassword}});
         } catch(e: unknown) {
             console.log(catchError(e));
