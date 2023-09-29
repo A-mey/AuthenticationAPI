@@ -7,19 +7,19 @@ import SHA256 from 'crypto-js/sha256';
 import { scryptSync, randomBytes } from 'crypto';
 
 class EncryptionService {
-    async createSalt() {
+    createSalt = async () => {
         return randomBytes(16).toString("hex")
     }
 
-    async md5Encryption(value: string) {
+    md5Encryption = async (value: string) => {
         return CryptoJS.MD5(value).toString();
     }
 
-    async scrypt(value: string, salt: string) {
+    scrypt = (value: string, salt: string) => {
         return scryptSync(value, salt, 32).toString("hex");
     }
 
-    async aesEncryption(key: string, value: string) {
+    aesEncryption = (key: string, value: string) => {
         return CryptoJS.AES.encrypt(value, key).toString();
     }
 
@@ -27,11 +27,11 @@ class EncryptionService {
         return CryptoJS.AES.decrypt(value, key).toString(CryptoJS.enc.Utf8);
     }
 
-    async sha256Encryption(value: string) {
+    sha256Encryption = async (value: string) => {
         return SHA256(value).toString();
     }
 
-    async hmac(key: string, value: string) {
+    hmac = async (key: string, value: string) => {
         return crypto.createHmac("sha256",key).update(value).digest("hex")
     }
 

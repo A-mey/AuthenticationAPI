@@ -4,7 +4,7 @@ import loginHttpService from '../services/login.http.service';
 
 // const log: debug.IDebugger = debug('app:users-controller');
 class LoginMiddleware {
-    async checkExistingUser(req: Request, res: Response, next: NextFunction) {
+    checkExistingUser = async (req: Request, res: Response, next: NextFunction) => {
         const data = await loginHttpService.checkExistingUser(req.body.EMAILID);
         console.log("LoginMiddleware::checkExistingUser: ", data);
         if (!data) {

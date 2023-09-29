@@ -7,7 +7,7 @@ import { mailBody } from '../types/mailBody.types';
 const key: string = 'MySecretKey';
 
 class OtpService {
-    async createOTP(emailId: string):Promise<OtpObject> {
+    createOTP = async (emailId: string):Promise<OtpObject> => {
         const otpValidationTime: string = process.env.OTPVALIDATIONTIME || '2'
         const otpValidationTimeInMins: number = parseInt(otpValidationTime, 10);
     
@@ -25,7 +25,7 @@ class OtpService {
         return otpObj;
     }
     
-    async verifyOTP(emailId: string, hash: string, otp: string): Promise<boolean> {
+    verifyOTP = async (emailId: string, hash: string, otp: string): Promise<boolean> => {
         // Seperate Hash value and expires from the hash returned from the user
         const [hashValue,expires] = hash.split(".");
         // Check if expiry time has passed
@@ -42,7 +42,7 @@ class OtpService {
         return false;
     }
 
-    async sendOtpMail(emailId: string, otp: string): Promise<void> {
+    sendOtpMail = async (emailId: string, otp: string): Promise<void> => {
         const emailRecipient: string = emailId;
         const subject: string =  'OTP';
         let body: string = "Your OTP is ${otp}";

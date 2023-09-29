@@ -6,10 +6,10 @@ export class StreamService extends KafkaProducer {
       super(topic);
     }
   
-    async stream(message: unknown): Promise<void> {
+    stream = async (message: unknown): Promise<void> => {
       message = JSON.stringify(message)
-      await super.connect();
-      await super.send(message);
-      await super.disconnect();
+      await this.connect();
+      await this.send(message);
+      await this.disconnect();
     }
   }

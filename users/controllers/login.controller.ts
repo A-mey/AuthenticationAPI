@@ -15,10 +15,11 @@ import { catchError } from '../../common/helpers/catch.helper';
 import { OtpObject } from '../../common/types/otpObject.types';
 import { response } from '../../common/types/response.types';
 import { Pill } from '../types/pill.type';
+import { encryptionData } from '../types/encryptionData.type';
 // const log: debug.IDebugger = debug('app:users-controller');
 class UsersController {
 
-    async sendOTP(req: express.Request, res: express.Response) {
+    sendOTP = async (req: express.Request, res: express.Response) => {
         const emailId = req.body.EMAILID;
         const otpObject: OtpObject = await otpService.createOTP(emailId);
         await otpService.sendOtpMail(emailId, otpObject.otp!);
@@ -27,7 +28,7 @@ class UsersController {
         res.status(status).json(response);
     }
 
-    async validateOTP(req: express.Request, res: express.Response) {
+    validateOTP = async (req: express.Request, res: express.Response) => {
         const validation = await loginService.otpValidation(req.body.EMAILID, req.body.HASH, req.body.OTP)
         if (validation == true) {
             res.status(204).json({success: true, code: 204, data: {message: "OTP matched"}});
@@ -37,7 +38,7 @@ class UsersController {
         }
     }
 
-    async createUser(req: express.Request, res: express.Response) {
+    createUser = async (req: express.Request, res: express.Response) => {
         const emailId = req.body.EMAILID;
         const password = req.body.PASSWORD;
         const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
@@ -59,13 +60,23 @@ class UsersController {
         }
     }
 
-    async loginUser(req: express.Request, res: express.Response) {
+    loginUser = async (req: express.Request, res: express.Response) => {
         const emailId = req.body.EMAILID;
         const password = req.body.PASSWORD;
-        const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
-        const authenticateUser = await loginHttpService.checkAuth(encryptedPill);
-        if (authenticateUser?.code == 200) {
-            // res.status(200).send();
+        // const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
+        const encryptionData: encryptionData = await loginService.createUserAuth(emailId, password);
+        const usernameHash = encryptionData.usernameHash;
+        const userAuth = encryptionData.userAuth;
+        const userAuthCheck = {USERNAMEHASH: usernameHash, USERAUTH: userAuth}
+        const pillData = await loginHttpService.checkAuth(userAuthCheck);
+
+        if (pillData?.code !== 200) {
+            res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
+        }
+        const pillObject: {pill: string} = pillData?.data?.data as unknown as {pill: string};
+        const pill = pillObject.pill;
+        const oldPassword = await loginService.decryptAuthPill(pill, password, encryptionData.key, encryptionData.customSalt);
+        if (password === oldPassword) {
             const userData = await loginHttpService.getUserDetails(emailId);
             if (userData){
                 res.status(200).json({success: true, code: 200, data: {message: "Logged in successfully", data: userData.data!.data!}});
@@ -90,16 +101,16 @@ class UsersController {
         }
     }
 
-    decryptUserData = async(req: express.Request, res: express.Response) => {
-        try {
-            const pill = req.body.PILL;
-            const password = req.body.PASSWORD;
-            const storedPassword: string = await loginService.decryptAuthPill(pill, password);
-            res.status(200).json({success: true, code: 200, data: {message: "Done", data: storedPassword}});
-        } catch(e: unknown) {
-            console.log(catchError(e));
-        }
-    }
+    // decryptUserData = async(req: express.Request, res: express.Response) => {
+    //     try {
+    //         const pill = req.body.PILL;
+    //         const password = req.body.PASSWORD;
+    //         const storedPassword: string = await loginService.decryptAuthPill(pill, password);
+    //         res.status(200).json({success: true, code: 200, data: {message: "Done", data: storedPassword}});
+    //     } catch(e: unknown) {
+    //         console.log(catchError(e));
+    //     }
+    // }
     
 }
 

@@ -8,23 +8,23 @@ import { Pill } from '../types/pill.type';
 
 class LoginHTTPService {
 
-    async storeUserData(CreateUser: CreateUser): Promise<response | undefined> {
+    storeUserData = async (CreateUser: CreateUser): Promise<response | undefined> => {
         const url: string = process.env.storeUserDataURL!;
         return await HttpRequestService.postRequest(url, CreateUser);
     }
 
-    async checkAuth(encryptedPill: Pill): Promise<response | undefined> {
+    checkAuth = async (userAuth: object): Promise<response | undefined> => {
         const url = process.env.checkAuthURL!;
-        return await HttpRequestService.postRequest(url, encryptedPill);
+        return await HttpRequestService.postRequest(url, userAuth);
     }
 
-    async getUserDetails(emailId: string): Promise<response | undefined> {
+    getUserDetails = async (emailId: string): Promise<response | undefined> => {
         const url = process.env.getUserDetailsURL!;
         const data = {EMAILID: emailId};
         return await HttpRequestService.postRequest(url, data);
     }
 
-    async checkExistingUser(emailId: string): Promise<response | undefined> {
+    checkExistingUser = async (emailId: string): Promise<response | undefined> => {
         const url = process.env.checkExistingUserURL!;
         const data = {
             "EMAILID": emailId
@@ -34,7 +34,7 @@ class LoginHTTPService {
         return _data;
     }
 
-    async createNewAuth(encryptedPill: Pill): Promise<response | undefined> {
+    createNewAuth = async (encryptedPill: Pill): Promise<response | undefined> => {
         const url = process.env.storeAuthDataURL!;
         return await HttpRequestService.postRequest(url, encryptedPill);
     }

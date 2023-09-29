@@ -10,7 +10,7 @@ export class KafkaProducer extends KafkaJSClass {
         this.topic = topic;
     }
 
-    async connect() {
+    connect = async () => {
         try{
             await this.producer.connect();
             console.log("producer connected")
@@ -20,7 +20,7 @@ export class KafkaProducer extends KafkaJSClass {
         }
     }
 
-    async send(message: unknown) {
+    send = async (message: unknown) => {
         const data = message as string;
         await this.producer.send({
             topic: this.topic,
@@ -30,7 +30,7 @@ export class KafkaProducer extends KafkaJSClass {
           })
     }
 
-    async disconnect() {
+    disconnect = async () => {
         await this.producer.disconnect();
     }
 }

@@ -7,7 +7,6 @@ class ValidateSchema {
         const error: errorMessageObject = {isValid: false, errorMsg: ""};
         const isValid = schema(obj);
         if (isValid) {
-            // console.log('Data is valid');
             error.isValid = true
         }
         else {

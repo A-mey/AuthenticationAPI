@@ -2,7 +2,7 @@ import { CommonSchema } from "./schema";
 
 class CompileSchema extends CommonSchema{
 
-    async compile(schema: object) {
+    compile = async (schema: object) => {
         return this.ajv.compile(schema);
     }
 }
