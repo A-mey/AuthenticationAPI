@@ -72,11 +72,11 @@ class UsersController {
         const authPillData = await loginHttpService.checkAuth(userAuthCheck);
 
         if (authPillData?.code !== 200) {
-            res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
+            return res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
         }
-        const pillObject: {authPill: string} = authPillData?.data?.data as unknown as {authPill: string};
-        const authPill = pillObject.authPill;
-        const pill = authPill.substring(providedUserAuth.length + 1, authPill.length);
+        const pillObject: {AUTHPILL: string} = authPillData?.data?.data as unknown as {AUTHPILL: string};
+        const authPill = pillObject?.AUTHPILL;
+        const pill = authPill.substring(providedUserAuth.length, authPill.length);
         const oldPassword = await loginService.decryptAuthPill(pill, password, encryptionData.key, encryptionData.customSalt);
         if (password === oldPassword) {
             const emailObject: getUserDTO = {EMAILID: emailId};
