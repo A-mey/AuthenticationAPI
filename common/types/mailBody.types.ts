@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type mailBody = {
+export type mailBody = {
     EMAILRECIPIENT: string,
     SUBJECT: string,
     BODY: string

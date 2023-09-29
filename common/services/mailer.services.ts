@@ -1,4 +1,5 @@
-import {StreamService} from './kafka/stream.kafka'
+import {StreamService} from './kafka/stream.kafka';
+import { mailBody } from '../types/mailBody.types';
 
 export class MailService {
   stream: StreamService = new StreamService(process.env.MAIL_TOPIC!);

@@ -4,6 +4,8 @@ import LoginSchema from "../schema/login.schema";
 import ValidateSchema from "../../common/services/schema/validate.schema"
 import compileSchema from "../../common/services/schema/compile.schema";
 import { CommonSchemaValidator } from "../../common/interfaces/schemaValidation.interface";
+import { response } from '../../common/types/response.types';
+import { errorMessageObject } from '../../common/types/errorMsgObject.types';
 
 class LoginValidationMiddleware implements CommonSchemaValidator{
     

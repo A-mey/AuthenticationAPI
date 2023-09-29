@@ -1,6 +1,7 @@
 import OtpService from '../../common/services/otp.services'
 import EncryptionService from '../../common/services/encryption.services'
-// import {Pill} from '../types/pill.type'
+import {Pill} from '../types/pill.type'
+import { OtpObject } from '../../common/types/otpObject.types';
 
 class LoginService {
 
@@ -20,7 +21,7 @@ class LoginService {
         console.log(customSalt, "customSalt");
         const key = await EncryptionService.scrypt(customSalt, this.secretKey);
         console.log(key, "key");
-        const encryptedData = await EncryptionService.aesEencryption(key, password);
+        const encryptedData = await EncryptionService.aesEncryption(key, password);
         console.log(encryptedData, "encryptedData");
         const pill = customSalt + encryptedData;
         console.log(pill, "pill");
@@ -39,6 +40,16 @@ class LoginService {
             USERNAMEHASH: usernameHash
         }
         return data;
+    }
+
+    decryptAuthPill = async() => {
+        // const customSalt = await EncryptionService.md5Encryption(password);
+        // const encryptedData = pill.substring(customSalt.length, pill.length);
+        // const key = await EncryptionService.scrypt(customSalt, this.secretKey);
+        // const mySecret = await EncryptionService.aesEencryption(key, encryptedData);
+        // return mySecret;
+        const oldPassword = await EncryptionService.aesDecryption("e2e73172fbb15e03f336d85a7129e47a6f23e5643fccf43a81c8ad644e16d89f", "U2FsdGVkX18Yiso3Yvquw+g+YaIVFEGkykwzmk7Nn9g=");
+        return oldPassword;
     }
 }
 

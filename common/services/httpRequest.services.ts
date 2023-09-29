@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse} from 'axios';
 import { catchError } from '../helpers/catch.helper';
+import { response } from '../types/response.types';
 
 class HttpRequestService {
     async getRequest(url: string): Promise<response | undefined> {

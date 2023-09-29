@@ -37,6 +37,10 @@ export class LoginRoutes extends CommonRoutesConfig {
             .post(
                 LoginController.encryptUserData
             )
+        this.app.route('/decryptData')
+            .post(
+                LoginController.decryptUserData
+            )
         return this.app;
     }
 }

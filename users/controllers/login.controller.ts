@@ -12,8 +12,9 @@ import { CreateUser } from '../types/create.user.type';
 // import { catchError } from '../../common/helpers/catch.helper';
 import { User } from '../types/user.type';
 import { catchError } from '../../common/helpers/catch.helper';
-// import { Response } from '../../common/types/response.types';
-
+import { OtpObject } from '../../common/types/otpObject.types';
+import { response } from '../../common/types/response.types';
+import { Pill } from '../types/pill.type';
 // const log: debug.IDebugger = debug('app:users-controller');
 class UsersController {
 
@@ -88,6 +89,18 @@ class UsersController {
             console.log(catchError(e));
         }
     }
+
+    decryptUserData = async(_req: express.Request, res: express.Response) => {
+        try {
+            // const pill = req.body.PILL;
+            // const password = req.body.PASSWORD;
+            const storedPassword: string = await loginService.decryptAuthPill();
+            res.status(200).json({success: true, code: 200, data: {message: "Done", data: storedPassword}});
+        } catch(e: unknown) {
+            console.log(catchError(e));
+        }
+    }
+    
 }
 
 export default new UsersController();

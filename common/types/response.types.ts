@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type response = {
+export type response = {
     success: boolean,
     code: number,
     data: {message: string, data?: object}

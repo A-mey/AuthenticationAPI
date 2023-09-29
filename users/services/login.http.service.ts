@@ -1,7 +1,9 @@
 import HttpRequestService from '../../common/services/httpRequest.services'
+import { response } from '../../common/types/response.types';
 // import {Pill} from '../types/pill.type'
 // import { Response } from '../../common/types/response.types'
 import { CreateUser } from '../types/create.user.type'
+import { Pill } from '../types/pill.type';
 
 
 class LoginHTTPService {

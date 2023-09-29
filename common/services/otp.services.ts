@@ -1,6 +1,8 @@
 import otpGenerator from 'otp-generator';
 import {MailService} from './mailer.services';
 import EncryptionService from './encryption.services';
+import { OtpObject } from '../types/otpObject.types';
+import { mailBody } from '../types/mailBody.types';
 
 const key: string = 'MySecretKey';
 

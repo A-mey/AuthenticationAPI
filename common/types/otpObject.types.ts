@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type OtpObject = {
+export type OtpObject = {
     otp?: string,
     fullHash: string
 };
