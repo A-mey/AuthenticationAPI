@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 // import debug from 'debug';
 import loginHttpService from '../services/login.http.service';
+import { getUserDTO } from '../dto/get.user.dto';
 
 // const log: debug.IDebugger = debug('app:users-controller');
 class LoginMiddleware {
     checkExistingUser = async (req: Request, res: Response, next: NextFunction) => {
+        const emailIdObject: getUserDTO = { EMAILID: req.body.EMAILID };
         const data = await loginHttpService.checkExistingUser(req.body.EMAILID);
         console.log("LoginMiddleware::checkExistingUser: ", data);
         if (!data) {

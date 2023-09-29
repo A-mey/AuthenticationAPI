@@ -8,7 +8,7 @@ import loginHttpService from '../services/login.http.service';
 // import debug from 'debug';
 
 import otpService from '../../common/services/otp.services';
-import { CreateUser } from '../types/create.user.type';
+import { CreateUserDTO } from '../dto/create.user.dto';
 // import { catchError } from '../../common/helpers/catch.helper';
 import { User } from '../types/user.type';
 import { catchError } from '../../common/helpers/catch.helper';
@@ -16,6 +16,8 @@ import { OtpObject } from '../../common/types/otpObject.types';
 import { response } from '../../common/types/response.types';
 import { Pill } from '../types/pill.type';
 import { encryptionData } from '../types/encryptionData.type';
+import { validateUserDTO } from '../dto/validate.user.dto';
+import { getUserDTO } from '../dto/get.user.dto';
 // const log: debug.IDebugger = debug('app:users-controller');
 class UsersController {
 
@@ -43,7 +45,7 @@ class UsersController {
         const password = req.body.PASSWORD;
         const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
         const userData: User = {TITLE: req.body.TITLE, EMAILID: req.body.EMAILID, FIRSTNAME: req.body.FIRSTNAME, LASTNAME: req.body.LASTNAME, GENDER: req.body.GENDER, DOB: req.body.DOB}
-        const createUserData: CreateUser = {USER: userData, AUTH: encryptedPill};
+        const createUserData: CreateUserDTO = {USER: userData, AUTH: encryptedPill};
         const data = await loginHttpService.storeUserData(createUserData);
         console.log("UsersController:createUser", data);
         if (data!== undefined) {
@@ -67,7 +69,7 @@ class UsersController {
         const encryptionData: encryptionData = await loginService.createUserAuth(emailId, password);
         const usernameHash = encryptionData.usernameHash;
         const userAuth = encryptionData.userAuth;
-        const userAuthCheck = {USERNAMEHASH: usernameHash, USERAUTH: userAuth}
+        const userAuthCheck: validateUserDTO = {USERNAMEHASH: usernameHash, USERAUTH: userAuth}
         const pillData = await loginHttpService.checkAuth(userAuthCheck);
 
         if (pillData?.code !== 200) {
@@ -77,7 +79,8 @@ class UsersController {
         const pill = pillObject.pill;
         const oldPassword = await loginService.decryptAuthPill(pill, password, encryptionData.key, encryptionData.customSalt);
         if (password === oldPassword) {
-            const userData = await loginHttpService.getUserDetails(emailId);
+            const emailObject: getUserDTO = {EMAILID: emailId};
+            const userData = await loginHttpService.getUserDetails(emailObject);
             if (userData){
                 res.status(200).json({success: true, code: 200, data: {message: "Logged in successfully", data: userData.data!.data!}});
             }
