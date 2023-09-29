@@ -67,15 +67,16 @@ class UsersController {
         // const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
         const encryptionData: encryptionData = await loginService.createUserAuth(emailId, password);
         const usernameHash = encryptionData.usernameHash;
-        const userAuth = encryptionData.userAuth;
-        const userAuthCheck: validateUserDTO = {USERNAMEHASH: usernameHash, USERAUTH: userAuth}
-        const pillData = await loginHttpService.checkAuth(userAuthCheck);
+        const providedUserAuth = encryptionData.userAuth;
+        const userAuthCheck: validateUserDTO = {USERNAMEHASH: usernameHash, USERAUTH: providedUserAuth}
+        const authPillData = await loginHttpService.checkAuth(userAuthCheck);
 
-        if (pillData?.code !== 200) {
+        if (authPillData?.code !== 200) {
             res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
         }
-        const pillObject: {pill: string} = pillData?.data?.data as unknown as {pill: string};
-        const pill = pillObject.pill;
+        const pillObject: {authPill: string} = authPillData?.data?.data as unknown as {authPill: string};
+        const authPill = pillObject.authPill;
+        const pill = authPill.substring(providedUserAuth.length + 1, authPill.length);
         const oldPassword = await loginService.decryptAuthPill(pill, password, encryptionData.key, encryptionData.customSalt);
         if (password === oldPassword) {
             const emailObject: getUserDTO = {EMAILID: emailId};
