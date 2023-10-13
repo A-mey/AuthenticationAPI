@@ -14,6 +14,7 @@ export class LoginRoutes extends CommonRoutesConfig {
         this.app.route(`/createOTP`)
             .post(
                 LoginValidationMiddleware.checkSchema,
+                LoginMiddleware.checkExistingUser,
                 LoginController.sendOTP
             );
         this.app.route('/validateOTP')
@@ -24,7 +25,6 @@ export class LoginRoutes extends CommonRoutesConfig {
         this.app.route('/registerUser')
             .post(
                 LoginValidationMiddleware.checkSchema,
-                LoginMiddleware.checkExistingUser,
                 LoginController.createUser
             )
         this.app.route('/loginUser')
