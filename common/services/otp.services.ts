@@ -11,7 +11,8 @@ class OtpService {
         const otpValidationTime: string = process.env.OTPVALIDATIONTIME || '2'
         const otpValidationTimeInMins: number = parseInt(otpValidationTime, 10);
     
-        const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+        // const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+        const otp = await randomNumberGenerator();
         const ttl = otpValidationTimeInMins * 60 * 1000; //5 Minutes in miliseconds
         const expires = Date.now() + ttl; //timestamp to 5 minutes in the future
         const data = `${emailId}.${otp}.${expires}`; // phone.otp.expiry_timestamp
