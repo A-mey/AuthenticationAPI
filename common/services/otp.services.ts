@@ -3,6 +3,7 @@ import {MailService} from './mailer.services';
 import EncryptionService from './encryption.services';
 import { OtpObject } from '../types/otpObject.types';
 import { mailBody } from '../types/mailBody.types';
+import { randomNumberGenerator } from '../helpers/random.helper';
 
 const key: string = 'MySecretKey';
 
@@ -13,6 +14,7 @@ class OtpService {
     
         // const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
         const otp = await randomNumberGenerator();
+        console.log("otp", otp);
         const ttl = otpValidationTimeInMins * 60 * 1000; //5 Minutes in miliseconds
         const expires = Date.now() + ttl; //timestamp to 5 minutes in the future
         const data = `${emailId}.${otp}.${expires}`; // phone.otp.expiry_timestamp

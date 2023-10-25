@@ -32,7 +32,7 @@ class UsersController {
     validateOTP = async (req: express.Request, res: express.Response) => {
         const validation = await loginService.otpValidation(req.body.EMAILID, req.body.HASH, req.body.OTP)
         if (validation == true) {
-            res.status(204).json({success: true, code: 204, data: {message: "OTP matched"}});
+            res.status(200).json({success: true, code: 204, data: {message: "OTP matched"}});
         }
         else if (validation == false) {
             res.status(401).json({success: false, code: 401, data: {message: "OTP did not match"}});
