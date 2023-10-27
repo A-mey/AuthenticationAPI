@@ -1,4 +1,4 @@
-import HttpRequestService from '../../common/services/httpRequest.services'
+import HttpRequestService from '../../common/services/http/http.services'
 import { response } from '../../common/types/response.types';
 // import {Pill} from '../types/pill.type'
 // import { Response } from '../../common/types/response.types'
