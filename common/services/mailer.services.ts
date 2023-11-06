@@ -7,6 +7,6 @@ export class MailService {
   constructor() { }
 
   send = async (mailBody: mailBody): Promise<void> => {
-    await this.stream.stream(mailBody);
+    // await this.stream.stream(mailBody);
   }
 }
