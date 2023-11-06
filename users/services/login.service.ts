@@ -64,12 +64,10 @@ class LoginService {
         return createUserData;
     }
 
-    errorThrower = async(a: string) => {
-        if (a === "1") {
-            throw new Error("test error");
-        } else {
-            return "0";
-        }
+    getOldPassword = async (password: string, encryptionData: encryptionData) : Promise<string> => {
+        const pill = encryptionData.authPill!.substring(encryptionData.userAuth.length, encryptionData.authPill!.length);
+        const oldPassword = await this.decryptAuthPill(pill, password, encryptionData.key, encryptionData.customSalt);
+        return oldPassword;
     }
 }
 

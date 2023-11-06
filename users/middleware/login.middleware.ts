@@ -3,6 +3,9 @@ import { NextFunction, Request, Response } from 'express';
 import loginDao from '../dao/login.http.service';
 import { getUserDTO } from '../dto/get.user.dto';
 import { response } from '../../common/types/response.types';
+import loginService from '../services/login.service';
+import { encryptionData } from '../types/encryptionData.type';
+import { validateUserDTO } from '../dto/validate.user.dto';
 
 // const log: debug.IDebugger = debug('app:users-controller');
 class LoginMiddleware {
@@ -31,6 +34,37 @@ class LoginMiddleware {
             }
         }
         res.status(returnData.code).json(returnData);
+    }
+
+    authenticateLoginData = async (req: Request, res: Response, next: NextFunction) => {
+        const emailId = req.body.EMAILID;
+        const password = req.body.PASSWORD;
+        const encryptionData: encryptionData = await loginService.createUserAuth(emailId, password);
+        const usernameHash = encryptionData.usernameHash;
+        const providedUserAuth = encryptionData.userAuth;
+        const userAuthCheck: validateUserDTO = {USERNAMEHASH: usernameHash, USERAUTH: providedUserAuth}
+        const checkAuthResponse = await loginDao.checkAuth(userAuthCheck);
+        if (checkAuthResponse?.code === 200) {
+            const pillObject: {AUTHPILL: string} = checkAuthResponse.data.data as unknown as {AUTHPILL: string};
+            encryptionData.authPill =  pillObject.AUTHPILL;
+            res.locals.encryptionData = encryptionData;
+            res.locals.loginRequest = {emailId: emailId, password: password};
+            next(encryptionData);
+        } else {
+            res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
+        }
+    }
+
+    validatePasssword = async (req: Request, res: Response, next: NextFunction) => {
+        const encryptionData: encryptionData = res.locals.encryptionData;
+        const password: string = res.locals.loginRequest.password;
+        const oldPassword = await loginService.getOldPassword(password, encryptionData);
+        if (oldPassword === password) {
+            res.locals.emailId = res.locals.loginRequest.emailId;
+            next();
+        } else {
+            res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
+        }
     }
 }
 

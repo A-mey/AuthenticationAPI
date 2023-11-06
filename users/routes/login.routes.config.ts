@@ -29,11 +29,11 @@ export class LoginRoutes extends CommonRoutesConfig {
         this.app.route('/loginUser')
             .post(
                 LoginMiddleware.checkWhetherUserExists,
-                LoginController.loginUser
-            )
-        this.app.route('/errorCheck/:a')
-            .get(
-                LoginController.testError
+                // LoginController.loginUser
+                LoginMiddleware.authenticateLoginData,
+                LoginMiddleware.validatePasssword,
+                LoginController.returnUserData
+
             )
         return this.app;
     }
