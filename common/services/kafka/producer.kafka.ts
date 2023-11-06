@@ -1,4 +1,4 @@
-import { catchError } from '../../helpers/catch.helper';
+import { catchError } from '../../utils/catch.util';
 import { KafkaJSClass } from './config.kakfa';
 
 export class KafkaProducer extends KafkaJSClass {

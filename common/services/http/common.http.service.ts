@@ -1,31 +1,30 @@
 import axios, { AxiosRequestConfig, AxiosResponse} from "axios";
-// import { catchError } from "../../helpers/catchError.helper";
 import { response } from "../../types/response.types";
 import { httpMethod } from "../../types/httpMethods.type";
+import { NullException } from "../../error/exceptions/null.exception.error";
+import { axiosErrorHandler } from "../../utils/axiosError.util";
 
 class CommonHttpService {
-	httpRequest = async(url: string, data: object, method: httpMethod) => {
-		const config: AxiosRequestConfig = {
-			method: method,
-			url: url,
-			data: method === "post"? JSON.stringify(data): data,
-			headers: { 
-				"Content-Type": "application/json"
-			}
-		};
-		let res: response | undefined;
-		try 
-		{
+	httpRequest = async(url: string, data: object, method: httpMethod) : Promise<response> => {
+		let res: response;
+		try {
+			const config: AxiosRequestConfig = {
+				method: method,
+				url: url,
+				data: method === "post"? JSON.stringify(data): data,
+				headers: { 
+					"Content-Type": "application/json"
+				}
+			};
 			const httpResponse: AxiosResponse = await axios(config);
-			console.log(httpResponse, "httpResponse");
+			if (!httpResponse) {
+				throw new NullException();
+			}
+			res = httpResponse as unknown as response;
 			console.log(httpResponse.data);
 			res = httpResponse.data;
-		}
-		catch(e: unknown) {
-			if (axios.isAxiosError(e)){
-				console.log("error", e.response);
-				res = e.response?.data;
-			}
+		} catch(e: unknown) {
+			throw new Error(await axiosErrorHandler(e));
 		}
 		return res;
 	}

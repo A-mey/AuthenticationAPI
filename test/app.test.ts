@@ -3,7 +3,7 @@ import {app, server} from '../app';
 import { expect } from 'chai';
 import supertest from 'supertest';
 
-import { catchError } from '../common/helpers/catch.helper';
+import { catchError } from '../common/utils/catch.util';
 
 // import { Response } from '../common/types/response.types';
 

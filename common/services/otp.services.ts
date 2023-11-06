@@ -1,14 +1,13 @@
-import otpGenerator from 'otp-generator';
 import {MailService} from './mailer.services';
 import EncryptionService from './encryption.services';
 import { OtpObject } from '../types/otpObject.types';
 import { mailBody } from '../types/mailBody.types';
-import { randomNumberGenerator } from '../helpers/random.helper';
+import { randomNumberGenerator } from '../utils/random.util';
 
 const key: string = 'MySecretKey';
 
 class OtpService {
-    createOTP = async (emailId: string):Promise<OtpObject> => {
+    createOTPObject = async (emailId: string): Promise<OtpObject> => {
         const otpValidationTime: string = process.env.OTPVALIDATIONTIME || '2'
         const otpValidationTimeInMins: number = parseInt(otpValidationTime, 10);
     
@@ -36,9 +35,7 @@ class OtpService {
         if(now>parseInt(expires)) return false;
         // Calculate new hash with the same key and the same algorithm
         const data  = `${emailId}.${otp}.${expires}`;
-        // let newCalculatedHash = crypto.createHmac("sha256",key).update(data).digest("hex");
         const newCalculatedHash = await EncryptionService.hmac(key, data);
-        // Match the hashes
         if(newCalculatedHash.toString() === hashValue){
             return true;
         } 

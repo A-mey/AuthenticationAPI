@@ -1,5 +1,5 @@
 import { ErrorObject } from "ajv";
-import { catchError } from "../../helpers/catch.helper";
+import { catchError } from "../../utils/catch.util";
 
 class SchemaError {
     constructor() {}

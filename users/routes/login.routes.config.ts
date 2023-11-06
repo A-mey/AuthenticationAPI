@@ -11,27 +11,29 @@ export class LoginRoutes extends CommonRoutesConfig {
     }
     configureRoutes() {
 
+        this.app.use(LoginValidationMiddleware.checkSchema);
+
         this.app.route(`/createOTP`)
             .post(
-                LoginValidationMiddleware.checkSchema,
-                LoginMiddleware.checkExistingUser,
+                LoginMiddleware.checkWhetherUserExists,
                 LoginController.sendOTP
             );
         this.app.route('/validateOTP')
             .post(
-                LoginValidationMiddleware.checkSchema,
                 LoginController.validateOTP
             );
         this.app.route('/registerUser')
             .post(
-                LoginValidationMiddleware.checkSchema,
                 LoginController.createUser
             )
         this.app.route('/loginUser')
             .post(
-                LoginValidationMiddleware.checkSchema,
-                LoginMiddleware.checkExistingUser,
+                LoginMiddleware.checkWhetherUserExists,
                 LoginController.loginUser
+            )
+        this.app.route('/errorCheck/:a')
+            .get(
+                LoginController.testError
             )
         return this.app;
     }
