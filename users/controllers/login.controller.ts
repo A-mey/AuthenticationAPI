@@ -53,7 +53,6 @@ class UsersController {
     loginUser = async (req: express.Request, res: express.Response) => {
         const emailId = req.body.EMAILID;
         const password = req.body.PASSWORD;
-        // const encryptedPill: Pill = await loginService.createAuthPill(emailId, password);
         const encryptionData: encryptionData = await loginService.createUserAuth(emailId, password);
         const usernameHash = encryptionData.usernameHash;
         const providedUserAuth = encryptionData.userAuth;
