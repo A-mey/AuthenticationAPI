@@ -15,6 +15,7 @@ import { response } from '../../common/types/response.types';
 import { getUserDTO } from '../dto/get.user.dto';
 import { defaultResponse } from '../../common/helpers/defaultResponse.helper';
 import { createUserInput } from '../types/create.user.input.type';
+import { catchError } from '../../common/utils/catch.util';
 // const log: debug.IDebugger = debug('app:users-controller');
 class UsersController {
 
@@ -43,18 +44,31 @@ class UsersController {
     }
 
     createUser = async (req: express.Request, res: express.Response) => {
-        const userData: createUserInput = req.body;
-        const createUserData: CreateUserDTO = await loginService.createUserData(userData);
-        const storeUserDataResponse = await loginDao.storeUserData(createUserData);
-        console.log("UsersController:createUser", storeUserDataResponse);
-        res.status(storeUserDataResponse.code).json({storeUserDataResponse});
+        let response = defaultResponse;
+        try {
+            const userData: createUserInput = req.body;
+            const createUserData: CreateUserDTO = await loginService.createUserData(userData);
+            const storeUserDataResponse = await loginDao.storeUserData(createUserData);
+            console.log("UsersController:createUser", storeUserDataResponse);
+            response = storeUserDataResponse;
+        } catch (error: unknown) {
+            console.log(await catchError(error));
+        }
+        res.status(response.code).json(response);
     }
 
     returnUserData = async (req: express.Request, res: express.Response) => {
-        const emailId = res.locals.loginRequest.emailId;
-        const emailObject: getUserDTO = {EMAILID: emailId};
-        const userDataResponse = await loginDao.getUserByEmailId(emailObject);
-        res.status(userDataResponse.code).json(userDataResponse);
+        // res.status(userDataResponse.code).json(userDataResponse);
+        let response = defaultResponse;
+        try {
+            const emailId = res.locals.loginRequest.emailId;
+            const emailObject: getUserDTO = {EMAILID: emailId};
+            const userDataResponse = await loginDao.getUserByEmailId(emailObject);
+            response = userDataResponse;
+        } catch (error: unknown) {
+            console.log(await catchError(error));
+        }
+        res.status(response.code).json(response);        
     }
 }
 

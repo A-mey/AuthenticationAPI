@@ -1,9 +1,8 @@
 import {app, server} from '../app';
 import nock from 'nock';
 import { expect } from 'chai';
+import sinon from 'sinon';
 // import supertest from 'supertest';
-
-import { catchError } from '../common/utils/catch.util';
 
 // import { Response } from '../common/types/response.types';
 
@@ -18,9 +17,16 @@ import { httpMethod } from '../common/types/httpMethods.type';
 describe('LOGIN API', function() {
     // let request: supertest.SuperAgentTest;
     before(function() {
-        nock('http://localhost:3001')
-                .post('/getUser', { EMAILID: 'amey2p@gmail.com' })
-                .reply(200, { FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
+        nock('http://localhost:2001')
+            .post('/checkUser', { EMAILID: 'amey2p@gmail.com' })
+            .reply(200, { FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
+
+        const mockResponse = () => {
+            const res = {};
+            res.status = sinon.stub().returns(res);
+            res.json = sinon.stub().returns(res);
+            return res;
+        };
     });
     after(function(done) {
         server.close(done);
@@ -139,6 +145,10 @@ describe('LOGIN API', function() {
     it('should return a user by email Id', async () => {
         expect(await loginDao.getUserByEmailId({ EMAILID: 'amey2p@gmail.com' })).to.deep.equal({ FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
     })
+
+    // it('', async () => {
+
+    // })
 
 
 })
