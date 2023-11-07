@@ -50,37 +50,6 @@ class UsersController {
         res.status(storeUserDataResponse.code).json({storeUserDataResponse});
     }
 
-    // loginUser = async (req: express.Request, res: express.Response) => {
-    //     const emailId = req.body.EMAILID;
-    //     const password = req.body.PASSWORD;
-    //     const encryptionData: encryptionData = await loginService.createUserAuth(emailId, password);
-    //     const usernameHash = encryptionData.usernameHash;
-    //     const providedUserAuth = encryptionData.userAuth;
-    //     const userAuthCheck: validateUserDTO = {USERNAMEHASH: usernameHash, USERAUTH: providedUserAuth}
-    //     const authPillData = await loginDao.checkAuth(userAuthCheck);
-
-    //     if (authPillData?.code !== 200) {
-    //         return res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
-    //     }
-    //     const pillObject: {AUTHPILL: string} = authPillData?.data?.data as unknown as {AUTHPILL: string};
-    //     const authPill = pillObject?.AUTHPILL;
-    //     const pill = authPill.substring(providedUserAuth.length, authPill.length);
-    //     const oldPassword = await loginService.decryptAuthPill(pill, password, encryptionData.key, encryptionData.customSalt);
-    //     if (password === oldPassword) {
-    //         const emailObject: getUserDTO = {EMAILID: emailId};
-    //         const userData = await loginDao.getUserDetails(emailObject);
-    //         if (userData){
-    //             res.status(200).json({success: true, code: 200, data: {message: "Logged in successfully", data: userData.data!.data!}});
-    //         }
-    //         else {
-    //             res.status(400).json({success: false, code: 401, data: {message: "Something went wrong"}});
-    //         }
-    //     }
-    //     else {
-    //         res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
-    //     }
-    // }
-
     returnUserData = async (req: express.Request, res: express.Response) => {
         const emailId = res.locals.loginRequest.emailId;
         const emailObject: getUserDTO = {EMAILID: emailId};

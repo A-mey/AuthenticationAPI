@@ -29,7 +29,6 @@ class LoginDao {
     getUserByEmailId = async (emailIdObject: getUserDTO): Promise<response> => {
         const url = process.env.checkExistingUserURL!;
         const response = await HttpRequestService.postRequest(url, emailIdObject);
-        console.log("LoginHTTPService::checkExistingUser: ", response)
         return response;
     }
 
