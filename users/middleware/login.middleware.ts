@@ -66,7 +66,7 @@ class LoginMiddleware {
     validatePasssword = async (req: Request, res: Response, next: NextFunction) => {
         const encryptionData: encryptionData = res.locals.encryptionData;
         const password: string = res.locals.loginRequest.password;
-        const oldPassword = await loginService.getOldPassword(password, encryptionData);
+        const oldPassword = await loginService.getOldPassword(encryptionData);
         if (oldPassword === password) {
             res.locals.emailId = res.locals.loginRequest.emailId;
             next();

@@ -49,7 +49,7 @@ class LoginService {
         return userAuthObject;
     }
 
-    decryptAuthPill = async (pill: string, password: string, key: string, customSalt: string) => {
+    decryptAuthPill = async (pill: string, key: string, customSalt: string) => {
         const encryptedData = pill.substring(customSalt.length, pill.length);
         const mySecret = await EncryptionService.aesDecryption(key, encryptedData);
         return mySecret;
@@ -64,9 +64,9 @@ class LoginService {
         return createUserData;
     }
 
-    getOldPassword = async (password: string, encryptionData: encryptionData) : Promise<string> => {
+    getOldPassword = async (encryptionData: encryptionData) : Promise<string> => {
         const pill = encryptionData.authPill!.substring(encryptionData.userAuth.length, encryptionData.authPill!.length);
-        const oldPassword = await this.decryptAuthPill(pill, password, encryptionData.key, encryptionData.customSalt);
+        const oldPassword = await this.decryptAuthPill(pill, encryptionData.key, encryptionData.customSalt);
         return oldPassword;
     }
 }

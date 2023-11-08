@@ -1,7 +1,8 @@
 import {app, server} from '../app';
 import nock from 'nock';
 import { expect } from 'chai';
-import sinon from 'sinon';
+// import sinon from 'sinon';
+import loginService from '../users/services/login.service';
 // import supertest from 'supertest';
 
 // import { Response } from '../common/types/response.types';
@@ -21,12 +22,12 @@ describe('LOGIN API', function() {
             .post('/checkUser', { EMAILID: 'amey2p@gmail.com' })
             .reply(200, { FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
 
-        const mockResponse = () => {
-            const res = {};
-            res.status = sinon.stub().returns(res);
-            res.json = sinon.stub().returns(res);
-            return res;
-        };
+        // const mockResponse = () => {
+        //     const res = {};
+        //     res.status = sinon.stub().returns(res);
+        //     res.json = sinon.stub().returns(res);
+        //     return res;
+        // };
     });
     after(function(done) {
         server.close(done);
@@ -146,9 +147,20 @@ describe('LOGIN API', function() {
         expect(await loginDao.getUserByEmailId({ EMAILID: 'amey2p@gmail.com' })).to.deep.equal({ FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
     })
 
-    // it('', async () => {
+    it('should return proper Authpill along with username hash', async () => {
+        const authPillData = await loginService.createAuthPill('amey2p@gmail.com', 'Pass@123');
+        console.log('authPillData', authPillData);
+        // expect(authPillData).to.deep.equal({
+        //     AUTHPILL: '59b39cb75c5af313aad05b2979f782d5a7d226d8d1b11fdebe85082223d99dc2f91e15dbec69fc40f81f0876e7009648U2FsdGVkX1+lBjQ+zHuuhlCUiCGHnY+tcTa6QcsZC5A=',
+        //     USERNAMEHASH: '5ab8f3fe30fcad9139f2e202ffaacd1c866e3353a24140e7f8150553bd5d4360'
+        //   })
+        expect(authPillData).to.have.keys(['AUTHPILL', 'USERNAMEHASH']);
+        expect(authPillData).to.have.ownProperty('USERNAMEHASH').to.deep.equal('5ab8f3fe30fcad9139f2e202ffaacd1c866e3353a24140e7f8150553bd5d4360');
+        expect(authPillData).to.have.ownProperty('AUTHPILL').to.have.lengthOf(140);
+        expect(authPillData).to.have.ownProperty('AUTHPILL').to.have.string('59b39cb75c5af313aad05b2979f782d5a7d226d8d1b11fdebe85082223d99dc2f91e15dbec69fc40f81f0876e7009648U2FsdGVkX1');
+    });
 
-    // })
+    
 
 
 })
