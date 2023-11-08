@@ -63,15 +63,21 @@ class LoginMiddleware {
         }        
     }
 
-    validatePasssword = async (req: Request, res: Response, next: NextFunction) => {
-        const encryptionData: encryptionData = res.locals.encryptionData;
-        const password: string = res.locals.loginRequest.password;
-        const oldPassword = await loginService.getOldPassword(encryptionData);
-        if (oldPassword === password) {
-            res.locals.emailId = res.locals.loginRequest.emailId;
-            next();
-        } else {
-            res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
+    validatePassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const encryptionData: encryptionData = res.locals.encryptionData;
+            const password: string = res.locals.loginRequest.password;
+            const oldPassword = await loginService.getOldPassword(encryptionData);
+            if (oldPassword === password) {
+                res.locals.emailId = res.locals.loginRequest.emailId;
+                next();
+            } else {
+                res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
+            }
+        } catch (error: unknown) {
+            console.log(await catchError(error));
+            const response = defaultResponse;
+            res.status(response.code).json(response);
         }
     }
 }

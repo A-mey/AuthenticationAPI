@@ -30,7 +30,7 @@ export class LoginRoutes extends CommonRoutesConfig {
             .post(
                 LoginMiddleware.checkWhetherUserExists,
                 LoginMiddleware.authenticateLoginData,
-                LoginMiddleware.validatePasssword,
+                LoginMiddleware.validatePassword,
                 LoginController.returnUserData
             )
         return this.app;

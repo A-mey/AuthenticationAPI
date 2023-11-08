@@ -6,6 +6,7 @@ import { encryptionData } from '../types/encryptionData.type';
 import { CreateUserDTO } from '../dto/create.user.dto';
 import { User } from '../types/user.type';
 import { createUserInput } from "../types/create.user.input.type"
+import { NullException } from '../../common/error/exceptions/null.exception.error';
 
 class LoginService {
 
@@ -66,6 +67,9 @@ class LoginService {
 
     getOldPassword = async (encryptionData: encryptionData) : Promise<string> => {
         const pill = encryptionData.authPill!.substring(encryptionData.userAuth.length, encryptionData.authPill!.length);
+        if (!pill) {
+            throw new NullException();
+        }
         const oldPassword = await this.decryptAuthPill(pill, encryptionData.key, encryptionData.customSalt);
         return oldPassword;
     }
