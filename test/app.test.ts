@@ -8,7 +8,7 @@ import { createUserInput } from '../users/types/create.user.input.type';
 
 // import { Response } from '../common/types/response.types';
 
-import loginDao from '../users/dao/login.http.service';
+import loginDao from '../users/dao/login.dao';
 import HttpRequestService from '../common/services/http/http.services';
 
 // import otpServices from '../common/services/otp.services';

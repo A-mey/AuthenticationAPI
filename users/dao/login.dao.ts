@@ -27,14 +27,14 @@ class LoginDao {
         return await HttpRequestService.postRequest(url, userAuth);
     }
 
-    getUserDetails = async (emailIdObject: getUserDTO): Promise<response> => {
+    getUserDetailsThroughEmailId = async (emailIdObject: getUserDTO): Promise<response> => {
         const url = process.env.getUserDetailsURL!;
         if (!url) {
             throw new NullException();
         }        return await HttpRequestService.postRequest(url, emailIdObject);
     }
 
-    getUserByEmailId = async (emailIdObject: getUserDTO): Promise<response> => {
+    checkWhetherUserExistsThoughEmailId = async (emailIdObject: getUserDTO): Promise<response> => {
         const url = process.env.checkExistingUserURL!;
         if (!url) {
             throw new NullException();
