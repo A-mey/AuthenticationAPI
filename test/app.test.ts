@@ -150,8 +150,9 @@ describe('Login Services', async () => {
             expect(await loginDao.getUserByEmailId({ EMAILID: 'amey2p@gmail.com' })).to.deep.equal({ FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
         });
     
-        it('createAuthPill return proper Authpill, username hash object', async () => {
+        it('createAuthPill should return proper Authpill, username hash object', async () => {
             const authPillData = await loginService.createAuthPill('amey2p@gmail.com', 'Pass@123');
+            console.log("authPillData", authPillData);
             expect(authPillData).to.have.keys(['AUTHPILL', 'USERNAMEHASH']);
             expect(authPillData).to.have.ownProperty('USERNAMEHASH').to.deep.equal('5ab8f3fe30fcad9139f2e202ffaacd1c866e3353a24140e7f8150553bd5d4360');
             expect(authPillData).to.have.ownProperty('AUTHPILL').to.have.lengthOf(140);
@@ -166,7 +167,6 @@ describe('Login Services', async () => {
             expect(userDataAndAuthPillAndUsernamehash).to.have.ownProperty('AUTH').to.have.keys(['AUTHPILL', 'USERNAMEHASH']);
             expect(userDataAndAuthPillAndUsernamehash).to.have.ownProperty('AUTH').to.have.ownProperty('USERNAMEHASH').to.deep.equal('5ab8f3fe30fcad9139f2e202ffaacd1c866e3353a24140e7f8150553bd5d4360');
             expect(userDataAndAuthPillAndUsernamehash).to.have.ownProperty('AUTH').to.have.ownProperty('AUTHPILL').to.have.lengthOf(140).that.have.string('59b39cb75c5af313aad05b2979f782d5a7d226d8d1b11fdebe85082223d99dc2f91e15dbec69fc40f81f0876e7009648U2FsdGVkX1');
-            // expect(userDataAndAuthPillAndUsernamehash).to.have.ownProperty('AUTH').to.have.ownProperty('AUTHPILL').to.have.string('59b39cb75c5af313aad05b2979f782d5a7d226d8d1b11fdebe85082223d99dc2f91e15dbec69fc40f81f0876e7009648U2FsdGVkX1');
         });
     
         it('should return OTP and hash  object', async () => {

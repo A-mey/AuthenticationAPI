@@ -21,7 +21,7 @@ class LoginMiddleware {
         }
         if (req.originalUrl == '/loginUser') {
             if (response.code == 200) {
-                next();
+                return next();
             }
             else {
                 returnData.data.message = response?.data.message || returnData.data.message;
@@ -32,7 +32,7 @@ class LoginMiddleware {
                 returnData.data.message = response.data.message;
             }
             else {
-                next();
+                return next();
             }
         }
         res.status(returnData.code).json(returnData);
@@ -52,7 +52,7 @@ class LoginMiddleware {
                 encryptionData.authPill =  pillObject.AUTHPILL;
                 res.locals.encryptionData = encryptionData;
                 res.locals.loginRequest = {emailId: emailId, password: password};
-                next(encryptionData);
+                next();
             } else {
                 res.status(401).json({success: false, code: 401, data: {message: "Invalid username/password"}});
             }

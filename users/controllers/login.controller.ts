@@ -31,15 +31,17 @@ class UsersController {
     validateOTP = async (req: express.Request, res: express.Response) => {
         const responseData: response = defaultResponse;
         const isOtpValid = await loginService.checkWhetherOtpIsValid(req.body.EMAILID, req.body.HASH, req.body.OTP)
-        if (isOtpValid == true) {
-            responseData.code = 204;
+        if (isOtpValid === true) {
+            responseData.code = 200;
             responseData.success = true;
             responseData.data.message = "OTP matched";
         }
-        else if (isOtpValid == false) {
+        else if (isOtpValid === false) {
             responseData.code = 401;
             responseData.data.message = "OTP did not match";
         }
+        console.log("isOtpValid", isOtpValid);
+        console.log("responseData", responseData);
         res.status(responseData.code).json(responseData);
     }
 
@@ -63,7 +65,7 @@ class UsersController {
         try {
             const emailId = res.locals.loginRequest.emailId;
             const emailObject: getUserDTO = {EMAILID: emailId};
-            const userDataResponse = await loginDao.getUserByEmailId(emailObject);
+            const userDataResponse = await loginDao.getUserDetails(emailObject);
             response = userDataResponse;
         } catch (error: unknown) {
             console.log(await catchError(error));
