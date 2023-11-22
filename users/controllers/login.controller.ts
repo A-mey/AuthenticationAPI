@@ -15,7 +15,7 @@ import { createUserInput } from '../types/create.user.input.type';
 import { catchError } from '../../common/utils/catch.util';
 // const log: debug.IDebugger = debug('app:users-controller');
 
-export class LoginController {
+class LoginController {
 
     constructor() { }
 
@@ -79,3 +79,5 @@ export class LoginController {
         res.status(response.code).json(response);        
     }
 }
+
+export default new LoginController();
