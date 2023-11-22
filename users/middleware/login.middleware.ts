@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 // import debug from 'debug';
-import loginDao from '../dao/login.http.service';
+import loginDao from '../dao/login.dao';
 import { getUserDTO } from '../dto/get.user.dto';
 import { response } from '../../common/types/response.types';
 import loginService from '../services/login.service';
@@ -14,7 +14,7 @@ class LoginMiddleware {
     checkWhetherUserExists = async (req: Request, res: Response, next: NextFunction) => {
         let returnData: response = {success: false, code: 400, data: {message: "something went wrong"} };
         const emailIdObject: getUserDTO = { EMAILID: req.body.EMAILID };
-        const response = await loginDao.getUserByEmailId(emailIdObject);
+        const response = await loginDao.checkWhetherUserExistsThoughEmailId(emailIdObject);
         console.log("LoginMiddleware::checkExistingUser: ", response);
         if (response.code === 500) {
             returnData = response;

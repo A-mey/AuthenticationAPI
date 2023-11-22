@@ -1,7 +1,7 @@
 import express from 'express';
 
 import loginService from '../services/login.service';
-import loginDao from '../dao/login.http.service';
+import loginDao from '../dao/login.dao';
 
 
 import otpService from '../../common/services/otp.services';
@@ -9,9 +9,6 @@ import { CreateUserDTO } from '../dto/create.user.dto';
 // import { catchError } from '../../common/utils/catch.util';
 import { OtpObject } from '../../common/types/otpObject.types';
 import { response } from '../../common/types/response.types';
-// import { Pill } from '../types/pill.type';
-// import { encryptionData } from '../types/encryptionData.type';
-// import { validateUserDTO } from '../dto/validate.user.dto';
 import { getUserDTO } from '../dto/get.user.dto';
 import { defaultResponse } from '../../common/helpers/defaultResponse.helper';
 import { createUserInput } from '../types/create.user.input.type';
@@ -65,7 +62,7 @@ class UsersController {
         try {
             const emailId = res.locals.loginRequest.emailId;
             const emailObject: getUserDTO = {EMAILID: emailId};
-            const userDataResponse = await loginDao.getUserDetails(emailObject);
+            const userDataResponse = await loginDao.getUserDetailsThroughEmailId(emailObject);
             response = userDataResponse;
         } catch (error: unknown) {
             console.log(await catchError(error));
