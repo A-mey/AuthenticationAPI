@@ -14,15 +14,24 @@ import { defaultResponse } from '../../common/helpers/defaultResponse.helper';
 import { createUserInput } from '../types/create.user.input.type';
 import { catchError } from '../../common/utils/catch.util';
 // const log: debug.IDebugger = debug('app:users-controller');
-class UsersController {
+
+export class LoginController {
+
+    constructor() { }
 
     sendOTP = async (req: express.Request, res: express.Response) => {
-        const emailId = req.body.EMAILID;
-        const otpObject: OtpObject = await otpService.createOTPObject(emailId);
-        await otpService.sendOtpMail(emailId, otpObject.otp!);
-        const status = 200;
-        const response: response = {success: true, code: status, data: {message: "OTP sent successfully", data: {fullHash: otpObject.fullHash}}};
-        res.status(status).json(response);
+        try{
+            const emailId = req.body.EMAILID;
+            const otpObject: OtpObject = await otpService.createOTPObject(emailId);
+            await otpService.sendOtpMail(emailId, otpObject.otp!);
+            const status = 200;
+            const response: response = {success: true, code: status, data: {message: "OTP sent successfully", data: {fullHash: otpObject.fullHash}}};
+            res.status(status).json(response);
+        } catch (error: unknown) {
+            const errorMessage = await catchError(error);
+            res.status(500).json({success: false, data: {message: errorMessage}});
+        }
+        
     }
 
     validateOTP = async (req: express.Request, res: express.Response) => {
@@ -70,5 +79,3 @@ class UsersController {
         res.status(response.code).json(response);        
     }
 }
-
-export default new UsersController();

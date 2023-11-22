@@ -1,4 +1,4 @@
-import {app, server} from '../app';
+import {server} from '../app';
 import nock from 'nock';
 import { expect } from 'chai';
 // import sinon from 'sinon';
@@ -9,12 +9,12 @@ import { createUserInput } from '../users/types/create.user.input.type';
 // import { Response } from '../common/types/response.types';
 
 import loginDao from '../users/dao/login.dao';
-import HttpRequestService from '../common/services/http/http.services';
+// import HttpRequestService from '../common/services/http/http.services';
 
 // import otpServices from '../common/services/otp.services';
 
 // import {MailService} from '../common/services/mailer.services';
-import { httpMethod } from '../common/types/httpMethods.type';
+// import { httpMethod } from '../common/types/httpMethods.type';
 import { OtpObject } from '../common/types/otpObject.types';
 
 describe('Login Services', async () => {
@@ -147,7 +147,7 @@ describe('Login Services', async () => {
 
     describe('Login services', () => {
         it('should return a user by email Id', async () => {
-            expect(await loginDao.getUserByEmailId({ EMAILID: 'amey2p@gmail.com' })).to.deep.equal({ FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
+            expect(await loginDao.getUserDetailsThroughEmailId({ EMAILID: 'amey2p@gmail.com' })).to.deep.equal({ FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
         });
     
         it('createAuthPill should return proper Authpill, username hash object', async () => {
