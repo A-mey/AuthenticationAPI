@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-// import { CommonRoutesConfig } from "../../common/common.routes.config";
-import LoginController from '../controllers/login.controller';
+import { CommonRoutesConfig } from "../../common/common.routes.config";
+import { LoginController } from '../controllers/login.controller';
 import LoginMiddleware from '../middleware/login.middleware';
 import LoginValidationMiddleware from "../middleware/validation.middleware"
 import express from 'express';
@@ -8,10 +8,12 @@ import express from 'express';
 
 export class LoginRoutes {
     app: express.Application;
-    
-    constructor(app: express.Application) {
+    private loginController!: LoginController;
+
+    constructor(app: express.Application, loginController: LoginController) {
         // super(app, 'UserRoutes');
         this.app = app;
+        this.loginController = loginController;
     }
     configureRoutes() {
 
@@ -20,22 +22,22 @@ export class LoginRoutes {
         this.app.route(`/createOTP`)
             .post(
                 LoginMiddleware.checkWhetherUserExists,
-                LoginController.sendOTP
+                this.loginController.sendOTP
             );
         this.app.route('/validateOTP')
             .post(
-                LoginController.validateOTP
+                this.loginController.validateOTP
             );
         this.app.route('/registerUser')
             .post(
-                LoginController.createUser
+                this.loginController.createUser
             )
         this.app.route('/loginUser')
             .post(
                 LoginMiddleware.checkWhetherUserExists,
                 LoginMiddleware.authenticateLoginData,
                 LoginMiddleware.validatePassword,
-                LoginController.returnUserData
+                this.loginController.returnUserData
             )
         return this.app;
     }

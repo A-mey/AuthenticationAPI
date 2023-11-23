@@ -16,11 +16,12 @@ import {LoginRoutes} from './users/routes/login.routes.config';
 // import {validationErrorMiddleware} from './common/error/validationErrorMiddleware.error';
 import debug from 'debug';
 import helmet from 'helmet';
+import { LoginController } from './users/controllers/login.controller';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
 const port = process.env.PORT;
-const routes: CommonRoutesConfig[] = [];
+const routes = [];
 // const sqlConnections: Array<SQLService> = [];
 const debugLog: debug.IDebugger = debug('app');
 
@@ -74,7 +75,8 @@ app.use(expressWinston.logger(loggerOptions));
 
 // here we are adding the UserRoutes to our array,
 // after sending the Express.js application object to have the routes added to our app!
-routes.push(new LoginRoutes(app));
+const loginController: LoginController = new LoginController();
+routes.push(new LoginRoutes(app, loginController));
 
 app.use(expressWinston.errorLogger({
     transports: [
@@ -98,9 +100,9 @@ app.use(helmet());
 
 
 server.listen(port, () => {
-    routes.forEach((route: CommonRoutesConfig) => {
-        debugLog(`Routes configured for ${route.getName()}`);
-    });
+    // routes.forEach((route: CommonRoutesConfig) => {
+    //     debugLog(`Routes configured for ${route.getName()}`);
+    // });
     // our only exception to avoiding console.log(), because we
     // always want to know when the server is done starting up
     console.log(runningMessage);
