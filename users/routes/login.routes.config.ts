@@ -1,14 +1,17 @@
-import { CommonRoutesConfig } from "../../common/common.routes.config";
+import 'reflect-metadata';
+// import { CommonRoutesConfig } from "../../common/common.routes.config";
 import LoginController from '../controllers/login.controller';
 import LoginMiddleware from '../middleware/login.middleware';
 import LoginValidationMiddleware from "../middleware/validation.middleware"
 import express from 'express';
 
 
-export class LoginRoutes extends CommonRoutesConfig {
+export class LoginRoutes {
+    app: express.Application;
     
     constructor(app: express.Application) {
-        super(app, 'UserRoutes');
+        // super(app, 'UserRoutes');
+        this.app = app;
     }
     configureRoutes() {
 

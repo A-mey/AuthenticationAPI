@@ -20,7 +20,7 @@ import helmet from 'helmet';
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
 const port = process.env.PORT;
-const routes: Array<CommonRoutesConfig> = [];
+const routes: CommonRoutesConfig[] = [];
 // const sqlConnections: Array<SQLService> = [];
 const debugLog: debug.IDebugger = debug('app');
 
