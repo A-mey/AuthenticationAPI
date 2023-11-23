@@ -7,6 +7,8 @@ import { CreateUserDTO } from '../dto/create.user.dto';
 import { User } from '../types/user.type';
 import { createUserInput } from "../types/create.user.input.type"
 import { NullException } from '../../common/error/exceptions/null.exception.error';
+import loginDao from '../dao/login.dao';
+import { getUserDTO } from '../dto/get.user.dto';
 
 class LoginService {
 
@@ -72,6 +74,28 @@ class LoginService {
         }
         const oldPassword = await this.decryptAuthPill(pill, encryptionData.key, encryptionData.customSalt);
         return oldPassword;
+    }
+
+    checkWhetherUserExists = async (emailId: string) => {
+        let proceed = false;
+        const emailIdObject: getUserDTO = { EMAILID: emailId };
+        const response = await loginDao.checkWhetherUserExistsThoughEmailId(emailIdObject);
+        console.log("response567", response);
+        if (response.code === 200) {
+            proceed = true;
+        }
+        return proceed;
+    }
+
+    checkToEnsureUserIsNotRepeated = async (emailId: string) => {
+        let proceed = false;
+        const emailIdObject: getUserDTO = { EMAILID: emailId };
+        const response = await loginDao.checkWhetherUserExistsThoughEmailId(emailIdObject);
+        if (response.code === 404) {
+            proceed = true;
+        }
+        console.log("response000", response);
+        return proceed;
     }
 }
 

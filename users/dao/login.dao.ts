@@ -40,6 +40,7 @@ class LoginDao {
             throw new NullException();
         }
         const response = await HttpRequestService.postRequest(url, emailIdObject);
+        console.log("response1234", response)
         return response;
     }
 

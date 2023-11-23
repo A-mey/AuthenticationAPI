@@ -9,145 +9,49 @@ import { createUserInput } from '../users/types/create.user.input.type';
 // import { Response } from '../common/types/response.types';
 
 import loginDao from '../users/dao/login.dao';
-import HttpRequestService from '../common/services/http/http.services';
 
 // import otpServices from '../common/services/otp.services';
 
 // import {MailService} from '../common/services/mailer.services';
-import { httpMethod } from '../common/types/httpMethods.type';
 import { OtpObject } from '../common/types/otpObject.types';
 
 describe('Login Services', async () => {
     // let request: supertest.SuperAgentTest;
+    beforeEach(() => {
+        // nock('http://localhost:2001')
+        //     .post('/checkUser', { EMAILID: 'notfound@gmail.com' })
+        //     .reply(404, { code: 404, status: false, data: {message: "No such user found"} });
+    })
     before(function() {
-        nock('http://localhost:2001')
+        const userFound = nock('http://localhost:2001')
             .post('/checkUser', { EMAILID: 'amey2p@gmail.com' })
-            .reply(200, { FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
-
-        // const mockResponse = () => {
-        //     const res = {};
-        //     res.status = sinon.stub().returns(res);
-        //     res.json = sinon.stub().returns(res);
-        //     return res;
-        // };
+            .reply(200, { code: 200, status: true, data: {message: "User found"} });
+        const userNotFound = nock('http://localhost:2001')
+            .post('/checkUser', { EMAILID: 'notfound@gmail.com' })
+            .reply(200, { code: 404, status: false, data: {message: "No such user found"} });
+        userFound.persist();
+        userNotFound.persist();
     });
     after(function(done) {
         server.close(done);
     })
 
-    // describe('API ENDPOINT', function() {
-    //     let request: supertest.SuperAgentTest;
-    //     before(function() {
-    //         request = supertest.agent(app);
-    //     });
-
-    //     it('should return fullhash', async function () {
-    //         try {
-    //             const res = await request.post('/createOTP').send({
-    //                 "EMAILID": "amey2p@gmail.com"
-    //             });
-    //             expect(res.status).to.equal(200);
-    //             expect(res.body.success).to.equal(true);
-    //             expect(res.body).not.to.be.empty;
-    //             expect(res.body).to.be.an('object');
-    //             expect(res.body.data.message).to.equal("OTP sent successfully");
-    //         }
-    //         catch(e: unknown) {
-    //             console.log(await catchError(e));
-    //         }
-    //     });
-    
-    //     it('should throw an error', async function () {
-    //         try {
-    //             const res = await request.post('/createOTP').send({
-    //                 "EMAILID": "amey2p@gmailcom"
-    //             });
-    //             expect(res.status).to.equal(400);
-    //             expect(res.body.success).to.equal(false);
-    //             expect(res.body).not.to.be.empty;
-    //             expect(res.body).to.be.an('Response');
-    //             expect(res.body.data.message).to.equal("Invalid type for property /EMAILID");
-    //         }
-    //         catch(e: unknown) {
-    //             console.log(await catchError(e));
-    //         }
-    //     })
-
-    //     it('should show user already exists while registration', async function () {
-    //         try {
-    //             const res = await request.post('/registerUser').send({
-    //                 "EMAILID": "amey2p@gmail.com",
-    //                 "PASSWORD": "pass@1234",
-    //                 "FIRSTNAME": "Ameya",
-    //                 "LASTNAME": "Patil",
-    //                 "FLAG": "REGISTER"
-
-    //             });
-    //             expect(res.status).to.equal(409);
-    //             expect(res.body.success).to.equal(false);
-    //             expect(res.body).not.to.be.empty;
-    //             expect(res.body).to.be.an('Response');
-    //             expect(res.body.data.message).to.equal("User already exists");
-    //         }
-    //         catch(e: unknown) {
-    //             console.log(await catchError(e));
-    //         }
-    //     })
-
-    //     it('should login the user', async function () {
-    //         try {
-    //             const res = await request.post('/registerUser').send({
-    //                 "EMAILID": "amey2p@gmail.com",
-    //                 "PASSWORD": "pass@1234",
-    //                 "FLAG": "LOGIN"
-
-    //             });
-    //             expect(res.status).to.equal(200);
-    //             expect(res.body.success).to.equal(true);
-    //             expect(res.body).not.to.be.empty;
-    //             expect(res.body).to.be.an('Response');
-    //             expect(res.body.data.message).to.e'qual("Logged in successfully");
-    //             expect(res.body.data.data).to.have.keys(['id','EMAILID','FIRSTNAME','LASTNAME'])
-    //         }
-    //         catch(e: unknown) {
-    //             console.log(await catchError(e));
-    //         }
-    //     })
-    // });
-
-    // describe('Unit function', async function() {
-    //     it('should return OTP', async function(){
-    //         try {
-    //             expect(otpServices.createOTP("amey2p@gmailcom")).to.be.an('string').that.have.lengthOf(6);
-    //             // expect(otpServices.createOTP("amey2p@gmailcom").length).to.be.an('string');
-    //         }
-    //         catch(e: unknown) {
-    //             console.log(await catchError(e));
-    //         }
-    //     })
-    
-    //     // it('should send mail', async function(){
-    //     //     try {
-    //     //         let mailService = new MailService()
-    //     //         expect(mailService.sendMail({"amey2p@gmail.com", "Test mail", "Test")).to.be.an('object');
-    //     //         expect(mailService.sendMail("amey2p@gmail.com", "Test mail", "Test")).to.have.keys(['accepted', 'rejected', 'ehlo', 'envelopeTime', 'messageTime', 'messageSize', 'response', 'envelope', 'messageId']);
-    //     //         expect(mailService.sendMail("amey2p@gmail.com", "Test mail", "Test")).to.haveOwnProperty('accepted').to.equal(['amey2p@gmail.com']);
-    //     //         expect(mailService.sendMail("amey2p@gmail.com", "Test mail", "Test")).to.haveOwnProperty('envelope').to.equal({ from: 'a.may3pp@gmail.com', to: [ 'amey2p@gmailcom' ] });
-    //     //         expect(mailService.sendMail("amey2p@gmail.com", "Test mail", "Test")).to.haveOwnProperty('response').to.contain('250 2.0.0 OK');                
-    //     //     }
-    //     //     catch(e: any) {
-    //     //         console.log(e.message);
-    //     //     }
-    //     // })
-
-
-    
-    
-    // })
-
     describe('Login services', () => {
-        it('should return a user by email Id', async () => {
-            expect(await loginDao.getUserByEmailId({ EMAILID: 'amey2p@gmail.com' })).to.deep.equal({ FIRSTNAME: 'Ameya', LASTNAME: 'Patil' });
+
+
+        it('checkWhetherUserExists should return true if user exists', async () => {
+            const response = await loginService.checkWhetherUserExists('amey2p@gmail.com');
+            const response2 = await loginService.checkWhetherUserExists('notfound@gmail.com');
+            expect(response).to.deep.equal(true);
+            expect(response2).to.deep.equal(false);
+        });
+
+        it('checkToEnsureUserIsNotRepeated should return true if user exists', async () => {
+            // console.log("checkToEnsureUserIsNotRepeated", await loginService.checkToEnsureUserIsNotRepeated('amey2p@gmail.com' ));
+            const response = await loginService.checkToEnsureUserIsNotRepeated('amey2p@gmail.com');
+            const response2 = await loginService.checkToEnsureUserIsNotRepeated('notfound@gmail.com');
+            expect(response).to.deep.equal(false);
+            expect(response2).to.deep.equal(true);
         });
     
         it('createAuthPill return proper Authpill, username hash object', async () => {
@@ -166,12 +70,11 @@ describe('Login Services', async () => {
             expect(userDataAndAuthPillAndUsernamehash).to.have.ownProperty('AUTH').to.have.keys(['AUTHPILL', 'USERNAMEHASH']);
             expect(userDataAndAuthPillAndUsernamehash).to.have.ownProperty('AUTH').to.have.ownProperty('USERNAMEHASH').to.deep.equal('5ab8f3fe30fcad9139f2e202ffaacd1c866e3353a24140e7f8150553bd5d4360');
             expect(userDataAndAuthPillAndUsernamehash).to.have.ownProperty('AUTH').to.have.ownProperty('AUTHPILL').to.have.lengthOf(140).that.have.string('59b39cb75c5af313aad05b2979f782d5a7d226d8d1b11fdebe85082223d99dc2f91e15dbec69fc40f81f0876e7009648U2FsdGVkX1');
-            // expect(userDataAndAuthPillAndUsernamehash).to.have.ownProperty('AUTH').to.have.ownProperty('AUTHPILL').to.have.string('59b39cb75c5af313aad05b2979f782d5a7d226d8d1b11fdebe85082223d99dc2f91e15dbec69fc40f81f0876e7009648U2FsdGVkX1');
         });
     
         it('should return OTP and hash  object', async () => {
             const otpObject: OtpObject = await loginService.createOTP("amey2p@gmailcom");
-            console.log("otpObject", otpObject);
+            // console.log("otpObject", otpObject);
             expect(otpObject).to.have.keys(['otp', 'fullHash']);
             expect(otpObject).to.have.ownProperty('otp').that.have.lengthOf(6);
             expect(otpObject).to.have.ownProperty('fullHash').that.have.lengthOf(78);
@@ -206,9 +109,9 @@ describe('Login Services', async () => {
 
     describe('Schema', () => {
     
-        it('should validate the schema', () => {
+        // it('should validate the schema', () => {
             
-        })
+        // })
     })
 })
 

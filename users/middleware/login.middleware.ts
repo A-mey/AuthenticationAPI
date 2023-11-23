@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 // import debug from 'debug';
 import loginDao from '../dao/login.dao';
-import { getUserDTO } from '../dto/get.user.dto';
 import { response } from '../../common/types/response.types';
 import loginService from '../services/login.service';
 import { encryptionData } from '../types/encryptionData.type';
@@ -12,30 +11,23 @@ import { defaultResponse } from '../../common/helpers/defaultResponse.helper';
 // const log: debug.IDebugger = debug('app:users-controller');
 class LoginMiddleware {
     checkWhetherUserExists = async (req: Request, res: Response, next: NextFunction) => {
-        let returnData: response = {success: false, code: 400, data: {message: "something went wrong"} };
-        const emailIdObject: getUserDTO = { EMAILID: req.body.EMAILID };
-        const response = await loginDao.checkWhetherUserExistsThoughEmailId(emailIdObject);
-        console.log("LoginMiddleware::checkExistingUser: ", response);
-        if (response.code === 500) {
-            returnData = response;
-        }
+        const returnData: response = {success: false, code: 400, data: {message: "something went wrong"} };
+        const emailId = req.body.EMAILID;
+        let proceedFurther: boolean = false;
         if (req.originalUrl == '/loginUser') {
-            if (response.code == 200) {
-                next();
-            }
-            else {
-                returnData.data.message = response?.data.message || returnData.data.message;
-            }
+            proceedFurther = await loginService.checkWhetherUserExists(emailId);
+            returnData.code = 404;
+            returnData.data.message = "No such user found";
         } else if (req.originalUrl == '/createOTP') {
-            if (response.code == 200) {
-                returnData.code = 409;
-                returnData.data.message = response.data.message;
-            }
-            else {
-                next();
-            }
+            proceedFurther = await loginService.checkToEnsureUserIsNotRepeated(emailId);
+            returnData.code = 409;
+            returnData.data.message = "This email Id already exists";
         }
-        res.status(returnData.code).json(returnData);
+        if (proceedFurther) {
+            next()
+        } else {
+            res.status(returnData.code).json(returnData);
+        }
     }
 
     authenticateLoginData = async (req: Request, res: Response, next: NextFunction) => {

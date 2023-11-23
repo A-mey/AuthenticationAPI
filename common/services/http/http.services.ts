@@ -17,7 +17,7 @@ class HttpRequestService {
 	async postRequest(url: string, data: object): Promise<response> {
 		let returnData: response = defaultResponse;
 		try {
-			returnData = await CommonHttpService.httpRequest(url, data, "post"); 
+			returnData = await CommonHttpService.httpRequest(url, data, "post");
 		} catch (e: unknown) {
 			console.log(await catchError(e));
 		}
