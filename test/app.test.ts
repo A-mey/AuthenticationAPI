@@ -1,4 +1,4 @@
-import {app, server} from '../app';
+import {server} from '../app';
 import nock from 'nock';
 import { expect } from 'chai';
 // import sinon from 'sinon';
@@ -8,7 +8,7 @@ import { createUserInput } from '../users/types/create.user.input.type';
 
 // import { Response } from '../common/types/response.types';
 
-import loginDao from '../users/dao/login.dao';
+// import loginDao from '../users/dao/login.dao';
 
 // import otpServices from '../common/services/otp.services';
 
