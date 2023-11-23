@@ -9,7 +9,8 @@
       "skipLibCheck": true,
       "strict": true,
       "esModuleInterop": true,
-      "inlineSourceMap": true
+      "inlineSourceMap": true,
+      "experimentalDecorators": true
     },
     "exclude":[
       "./node_modules"

@@ -6,6 +6,7 @@ import express from 'express';
 
 
 export class LoginRoutes extends CommonRoutesConfig {
+    
     constructor(app: express.Application) {
         super(app, 'UserRoutes');
     }

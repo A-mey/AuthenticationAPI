@@ -31,7 +31,9 @@ class LoginDao {
         const url = process.env.getUserDetailsURL!;
         if (!url) {
             throw new NullException();
-        }        return await HttpRequestService.postRequest(url, emailIdObject);
+        }
+        const response = await HttpRequestService.postRequest(url, emailIdObject);
+        return response; 
     }
 
     checkWhetherUserExistsThoughEmailId = async (emailIdObject: getUserDTO): Promise<response> => {

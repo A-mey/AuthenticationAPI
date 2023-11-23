@@ -14,29 +14,40 @@ import { defaultResponse } from '../../common/helpers/defaultResponse.helper';
 import { createUserInput } from '../types/create.user.input.type';
 import { catchError } from '../../common/utils/catch.util';
 // const log: debug.IDebugger = debug('app:users-controller');
-class UsersController {
+
+class LoginController {
+
+    constructor() { }
 
     sendOTP = async (req: express.Request, res: express.Response) => {
-        const emailId = req.body.EMAILID;
-        const otpObject: OtpObject = await otpService.createOTPObject(emailId);
-        await otpService.sendOtpMail(emailId, otpObject.otp!);
-        const status = 200;
-        const response: response = {success: true, code: status, data: {message: "OTP sent successfully", data: {fullHash: otpObject.fullHash}}};
-        res.status(status).json(response);
+        try{
+            const emailId = req.body.EMAILID;
+            const otpObject: OtpObject = await otpService.createOTPObject(emailId);
+            await otpService.sendOtpMail(emailId, otpObject.otp!);
+            const status = 200;
+            const response: response = {success: true, code: status, data: {message: "OTP sent successfully", data: {fullHash: otpObject.fullHash}}};
+            res.status(status).json(response);
+        } catch (error: unknown) {
+            const errorMessage = await catchError(error);
+            res.status(500).json({success: false, data: {message: errorMessage}});
+        }
+        
     }
 
     validateOTP = async (req: express.Request, res: express.Response) => {
         const responseData: response = defaultResponse;
         const isOtpValid = await loginService.checkWhetherOtpIsValid(req.body.EMAILID, req.body.HASH, req.body.OTP)
-        if (isOtpValid == true) {
-            responseData.code = 204;
+        if (isOtpValid === true) {
+            responseData.code = 200;
             responseData.success = true;
             responseData.data.message = "OTP matched";
         }
-        else if (isOtpValid == false) {
+        else if (isOtpValid === false) {
             responseData.code = 401;
             responseData.data.message = "OTP did not match";
         }
+        console.log("isOtpValid", isOtpValid);
+        console.log("responseData", responseData);
         res.status(responseData.code).json(responseData);
     }
 
@@ -69,4 +80,4 @@ class UsersController {
     }
 }
 
-export default new UsersController();
+export default new LoginController();
