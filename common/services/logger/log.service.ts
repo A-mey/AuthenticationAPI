@@ -7,9 +7,9 @@ export class LogService {
         this.tag = tag;
     }
 
-    log = (variableName: string, variableValue: unknown): void => {
+    log = (variableName: string, variableValue?: unknown): void => {
         const requestId = get("requestId");
-        console.log(requestId, `${this.tag}::${variableName}`, variableValue);
+        console.log(requestId, `${this.tag}::${variableName}`, JSON.parse(JSON.stringify(variableValue || "")));
     }
 
     addFunctionName = (functionName: string): void => {

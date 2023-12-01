@@ -19,7 +19,7 @@ export class LoginRoutes extends CommonRoutesConfig {
 
         this.app.route(`/createOTP`)
             .post(
-                LoginMiddleware.checkWhetherUserIsNew,
+                LoginMiddleware.checkWhetherUserDoesNotAlreadyExist,
                 LoginController.sendOTP
             );
         this.app.route('/validateOTP')

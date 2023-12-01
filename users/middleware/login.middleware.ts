@@ -6,6 +6,7 @@ import { validateUserDTO } from '../dto/validate.user.dto';
 import { catchError } from '../../common/utils/catch.util';
 import responseTemplates from '../../common/constants/response.template.constants';
 import { LogService } from '../../common/services/logger/log.service';
+import logFactoryService from '../../common/services/logger/log.factory.service';
 // const log: debug.IDebugger = debug('app:users-controller');
 class LoginMiddleware {
     logger: LogService;
@@ -15,8 +16,7 @@ class LoginMiddleware {
     }
 
     checkWhetherUserExists = async (req: Request, res: Response, next: NextFunction) => {
-        const logger = this.logger;
-        logger.addFunctionName("checkWhetherUserExists");
+        const logger = await logFactoryService.getLog(this.logger, "checkWhetherUserExists");
         try {
             const emailId = req.body.EMAILID;
             logger.log("emailId", emailId);
@@ -33,9 +33,8 @@ class LoginMiddleware {
         }        
     }
 
-    checkWhetherUserIsNew = async (req: Request, res: Response, next: NextFunction) => {
-        const logger = this.logger;
-        logger.addFunctionName("checkWhetherUserIsNew");
+    checkWhetherUserDoesNotAlreadyExist = async (req: Request, res: Response, next: NextFunction) => {
+        const logger = await logFactoryService.getLog(this.logger, "checkWhetherUserDoesNotAlreadyExist");
         try {
             const emailId = req.body.EMAILID;
             logger.log("emailId", emailId);
@@ -54,14 +53,17 @@ class LoginMiddleware {
     }
 
     authenticateLoginData = async (req: Request, res: Response, next: NextFunction) => {
+        const logger = await logFactoryService.getLog(this.logger, "authenticateLoginData");
         try {
             const emailId = req.body.EMAILID;
             const password = req.body.PASSWORD;
             const encryptionData: encryptionData = await this.loginService.createUserAuth(emailId, password);
+            logger.log("encryptionData", encryptionData);
             const usernameHash = encryptionData.usernameHash;
             const providedUserAuth = encryptionData.userAuth;
             const userAuthCheck: validateUserDTO = {USERNAMEHASH: usernameHash, USERAUTH: providedUserAuth}
             const checkAuthResponse = await this.loginService.authenticateUserData(userAuthCheck);
+            logger.log("checkAuthResponse", checkAuthResponse);
             if (checkAuthResponse?.code === 200) {
                 const pillObject: {AUTHPILL: string} = checkAuthResponse.data.data as unknown as {AUTHPILL: string};
                 encryptionData.authPill =  pillObject.AUTHPILL;
@@ -72,15 +74,17 @@ class LoginMiddleware {
                 res.status(401).json(responseTemplates.INVALID_CREDENTIALS);
             }
         } catch (error: unknown) {
-            console.log(await catchError(error));
+            logger.log("error", await catchError(error));
             const response = responseTemplates.DEFAULT_ERROR;
             res.status(response.code).json(response);
         }        
     }
 
     validatePassword = async (req: Request, res: Response, next: NextFunction) => {
+        const logger = await logFactoryService.getLog(this.logger, "validatePassword");
         try {
             const encryptionData: encryptionData = res.locals.encryptionData;
+            logger.log("encryptionData", encryptionData);
             const password: string = res.locals.loginRequest.password;
             const oldPassword = await this.loginService.getOldPassword(encryptionData);
             if (oldPassword === password) {
