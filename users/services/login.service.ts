@@ -1,4 +1,4 @@
-import OtpService from '../../common/services/otp.services'
+import { OtpService } from '../../common/services/otp.services'
 import EncryptionService from '../../common/services/encryption.services'
 import {Pill} from '../types/pill.type'
 import { OtpObject } from '../../common/types/otpObject.types';
@@ -10,15 +10,29 @@ import { NullException } from '../../common/error/exceptions/null.exception.erro
 import loginDao from '../dao/login.dao';
 import { getUserDTO } from '../dto/get.user.dto';
 
-class LoginService {
+export class LoginService {
+    otpService: OtpService;
+
+    constructor() {
+        this.otpService = new OtpService();
+    }
 
     private secretKey = process.env.SECRETKEY!
+
+    getOtpObject = async (emailId: string) => {
+        return await this.otpService.createOTPObject(emailId);
+    }
+
+    sendOtpViaMail = async (emailId: string, otp: string) => {
+        await this.otpService.sendOtpMail(emailId, otp!);
+    }
+    
     checkWhetherOtpIsValid = async (emailId: string, hash: string, otp: string) => {
-        return OtpService.verifyOTP(emailId, hash, otp);
+        return this.otpService.verifyOTP(emailId, hash, otp);
     }
 
     createOTP = async (email: string): Promise<OtpObject> => {
-        return OtpService.createOTPObject(email);
+        return this.otpService.createOTPObject(email);
     }
 
     createAuthPill = async (emailId: string, password: string): Promise<Pill> => {
@@ -80,23 +94,9 @@ class LoginService {
         let proceed = false;
         const emailIdObject: getUserDTO = { EMAILID: emailId };
         const response = await loginDao.checkWhetherUserExistsThoughEmailId(emailIdObject);
-        console.log("response567", response);
         if (response.code === 200) {
             proceed = true;
         }
         return proceed;
     }
-
-    checkToEnsureUserIsNotRepeated = async (emailId: string) => {
-        let proceed = false;
-        const emailIdObject: getUserDTO = { EMAILID: emailId };
-        const response = await loginDao.checkWhetherUserExistsThoughEmailId(emailIdObject);
-        if (response.code === 404) {
-            proceed = true;
-        }
-        console.log("response000", response);
-        return proceed;
-    }
 }
-
-export default new LoginService();

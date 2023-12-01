@@ -16,7 +16,7 @@ class LoginValidationMiddleware implements CommonSchemaValidator{
         const errorRes: errorMessageObject =  await ValidateSchema.validateSchema(req.body, validateSchemaFn);
         if (errorRes.isValid) {
             next();
-          } else {
+        } else {
             const response: response = {success: false, code: 400, data: {message: errorRes.errorMsg}}
             res.status(400).json(response);
         }

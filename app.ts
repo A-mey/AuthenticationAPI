@@ -16,6 +16,8 @@ import {LoginRoutes} from './users/routes/login.routes.config';
 // import {validationErrorMiddleware} from './common/error/validationErrorMiddleware.error';
 import debug from 'debug';
 import helmet from 'helmet';
+import httpContext from "express-http-context";
+
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -29,6 +31,9 @@ app.use(express.json());
 
 // here we are adding middleware to allow cross-origin requests
 app.use(cors());
+
+app.use(httpContext.middleware);
+
 
 // here we are preparing the expressWinston logging middleware configuration,
 // which will automatically log all HTTP requests handled by Express.js
@@ -84,7 +89,7 @@ app.use(expressWinston.errorLogger({
       winston.format.colorize(),
       winston.format.json()
     )
-  }));
+}));
 
 // sqlConnections.push(new SipSQL);
 // this is a simple route to make sure everything is working properly
@@ -95,6 +100,9 @@ app.get('/', (_req: express.Request, res: express.Response) => {
 
 app.use(helmet());
 // app.use(validationErrorMiddleware);
+
+
+
 
 
 server.listen(port, () => {

@@ -1,7 +1,8 @@
 import { CommonRoutesConfig } from "../../common/common.routes.config";
 import LoginController from '../controllers/login.controller';
 import LoginMiddleware from '../middleware/login.middleware';
-import LoginValidationMiddleware from "../middleware/validation.middleware"
+import LoginValidationMiddleware from "../middleware/validation.middleware";
+import idMiddleware from "../middleware/id.middleware";
 import express from 'express';
 
 
@@ -12,11 +13,13 @@ export class LoginRoutes extends CommonRoutesConfig {
     }
     configureRoutes() {
 
+        this.app.use(idMiddleware.createRequestId);
+
         this.app.use(LoginValidationMiddleware.checkSchema);
 
         this.app.route(`/createOTP`)
             .post(
-                LoginMiddleware.checkWhetherUserExists,
+                LoginMiddleware.checkWhetherUserIsNew,
                 LoginController.sendOTP
             );
         this.app.route('/validateOTP')

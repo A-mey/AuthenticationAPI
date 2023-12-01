@@ -3,19 +3,25 @@ import EncryptionService from './encryption.services';
 import { OtpObject } from '../types/otpObject.types';
 import { mailBody } from '../types/mailBody.types';
 import { randomNumberGenerator } from '../utils/random.util';
+import { catchError } from '../utils/catch.util';
 
 const key: string = 'MySecretKey';
 
-class OtpService {
+export class OtpService {
     createOTPObject = async (emailId: string): Promise<OtpObject> => {
-        const otp = await randomNumberGenerator();
-        console.log("otp", otp);
-        const fullHash:string = await this.getOtpFullHash(emailId, otp);
-        const otpObj: OtpObject = {
-            otp: otp,
-            fullHash: fullHash
+        try {
+            const otp = await randomNumberGenerator();
+            console.log("otp", otp);
+            const fullHash:string = await this.getOtpFullHash(emailId, otp);
+            const otpObj: OtpObject = {
+                otp: otp,
+                fullHash: fullHash
+            }
+            return otpObj;
+        } catch (error: unknown) {
+            throw new Error(await catchError(error));
         }
-        return otpObj;
+        
     }
 
     getOtpFullHash = async (emailId: string, otp: string): Promise<string> => {
@@ -60,4 +66,4 @@ class OtpService {
 
 }
 
-export default new OtpService()
+// export default new OtpService()
