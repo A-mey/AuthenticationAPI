@@ -23,8 +23,8 @@ class CommonHttpService {
 			res = httpResponse as unknown as response;
 			console.log(httpResponse.data);
 			res = httpResponse.data;
-		} catch(e: unknown) {
-			throw new Error(await axiosErrorHandler(e));
+		} catch(error: unknown) {
+			throw new Error(await axiosErrorHandler(error));
 		}
 		return res;
 	}

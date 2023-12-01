@@ -1,7 +1,6 @@
 import express from 'express';
 
 import { LoginService } from '../services/login.service';
-import loginDao from '../dao/login.dao';
 
 import { CreateUserDTO } from '../dto/create.user.dto';
 import { OtpObject } from '../../common/types/otpObject.types';
@@ -22,7 +21,7 @@ class LoginController {
 
     sendOTP = async (req: express.Request, res: express.Response) => {
         const logger = this.logger;
-        logger.addFunctionName(LoginController.prototype.sendOTP.name);
+        logger.addFunctionName("sendOTP");
         try{
             const emailId = req.body.EMAILID;
             const otpObject: OtpObject = await this.loginService.getOtpObject(emailId);
@@ -65,7 +64,7 @@ class LoginController {
         try {
             const userData: createUserInput = req.body;
             const createUserData: CreateUserDTO = await this.loginService.createUserData(userData);
-            const storeUserDataResponse = await loginDao.storeUserData(createUserData);
+            const storeUserDataResponse = await this.loginService.createNewUser(createUserData);
             console.log("UsersController:createUser", storeUserDataResponse);
             responseData = storeUserDataResponse;
         } catch (error: unknown) {
@@ -81,7 +80,8 @@ class LoginController {
         try {
             const emailId = res.locals.loginRequest.emailId;
             const emailObject: getUserDTO = {EMAILID: emailId};
-            const userDataResponse = await loginDao.getUserDetailsThroughEmailId(emailObject);
+            // const userDataResponse = await loginDao.getUserDetailsThroughEmailId(emailObject);
+            const userDataResponse = await this.loginService.getUserDetails(emailObject);
             responseData = userDataResponse;
         } catch (error: unknown) {
             console.log(await catchError(error));

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 // import debug from 'debug';
-import loginDao from '../dao/login.dao';
 import { LoginService } from '../services/login.service';
 import { encryptionData } from '../types/encryptionData.type';
 import { validateUserDTO } from '../dto/validate.user.dto';
@@ -62,7 +61,7 @@ class LoginMiddleware {
             const usernameHash = encryptionData.usernameHash;
             const providedUserAuth = encryptionData.userAuth;
             const userAuthCheck: validateUserDTO = {USERNAMEHASH: usernameHash, USERAUTH: providedUserAuth}
-            const checkAuthResponse = await loginDao.checkAuth(userAuthCheck);
+            const checkAuthResponse = await this.loginService.authenticateUserData(userAuthCheck);
             if (checkAuthResponse?.code === 200) {
                 const pillObject: {AUTHPILL: string} = checkAuthResponse.data.data as unknown as {AUTHPILL: string};
                 encryptionData.authPill =  pillObject.AUTHPILL;

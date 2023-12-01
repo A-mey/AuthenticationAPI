@@ -8,8 +8,8 @@ class HttpRequestService {
 		let returnData: response = responseTemplateConstants.DEFAULT_ERROR;
 		try {
 			returnData = await CommonHttpService.httpRequest(url, {}, "get");
-		} catch (e: unknown) {
-			console.log(await catchError(e));
+		} catch (error: unknown) {
+			throw new Error(await catchError(error));
 		}
 		return returnData;
 	}
@@ -18,8 +18,9 @@ class HttpRequestService {
 		let returnData: response = responseTemplateConstants.DEFAULT_ERROR;
 		try {
 			returnData = await CommonHttpService.httpRequest(url, data, "post");
-		} catch (e: unknown) {
-			console.log(await catchError(e));
+		} catch (error: unknown) {
+			// console.log(await catchError(e));
+			throw new Error(await catchError(error))
 		}
 		return returnData;
 	}

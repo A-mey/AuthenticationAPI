@@ -5,19 +5,35 @@ import { OtpObject } from '../../common/types/otpObject.types';
 import { encryptionData } from '../types/encryptionData.type';
 import { CreateUserDTO } from '../dto/create.user.dto';
 import { User } from '../types/user.type';
-import { createUserInput } from "../types/create.user.input.type"
+import { createUserInput } from '../types/create.user.input.type';
 import { NullException } from '../../common/error/exceptions/null.exception.error';
-import loginDao from '../dao/login.dao';
+import { LoginDao } from '../dao/login.dao';
 import { getUserDTO } from '../dto/get.user.dto';
+import { catchError } from '../../common/utils/catch.util';
+import { validateUserDTO } from '../dto/validate.user.dto';
 
 export class LoginService {
     otpService: OtpService;
+    loginDao: LoginDao;
 
     constructor() {
         this.otpService = new OtpService();
+        this.loginDao = new LoginDao();
     }
 
     private secretKey = process.env.SECRETKEY!
+
+    authenticateUserData = async (userAuthCheck: validateUserDTO) => {
+        return await this.loginDao.checkAuth(userAuthCheck);
+    }
+
+    getUserDetails = async (emailObject: getUserDTO) => {
+        return await this.loginDao.getUserDetailsThroughEmailId(emailObject);
+    }
+
+    createNewUser = async (createUserData: CreateUserDTO) => {
+        return await this.loginDao.storeUserData(createUserData);
+    }
 
     getOtpObject = async (emailId: string) => {
         return await this.otpService.createOTPObject(emailId);
@@ -91,12 +107,17 @@ export class LoginService {
     }
 
     checkWhetherUserExists = async (emailId: string) => {
-        let proceed = false;
-        const emailIdObject: getUserDTO = { EMAILID: emailId };
-        const response = await loginDao.checkWhetherUserExistsThoughEmailId(emailIdObject);
-        if (response.code === 200) {
-            proceed = true;
+        try {
+            let proceed = false;
+            const emailIdObject: getUserDTO = { EMAILID: emailId };
+            const response = await this.loginDao.checkWhetherUserExistsThoughEmailId(emailIdObject);
+            if (response.code === 200) {
+                proceed = true;
+            }
+            return proceed;
+        } catch (error: unknown) {
+            throw new Error(await catchError(error));
         }
-        return proceed;
+        
     }
 }

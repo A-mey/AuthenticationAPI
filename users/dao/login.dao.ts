@@ -7,52 +7,75 @@ import { validateUserDTO } from '../dto/validate.user.dto';
 import { Pill } from '../types/pill.type';
 import { getUserDTO } from '../dto/get.user.dto';
 import { NullException } from '../../common/error/exceptions/null.exception.error';
+import { catchError } from '../../common/utils/catch.util';
 
 
-class LoginDao {
+export class LoginDao {
 
     storeUserData = async (CreateUser: CreateUserDTO): Promise<response> => {
-        const url: string = process.env.storeUserDataURL!;
-        if (!url) {
-            throw new NullException();
+        try {
+            const url: string = process.env.storeUserDataURL!;
+            if (!url) {
+                throw new NullException();
+            }
+            return await HttpRequestService.postRequest(url, CreateUser);
+        } catch (error: unknown) {
+            throw new Error(await catchError(error));
         }
-        return await HttpRequestService.postRequest(url, CreateUser);
+        
     }
 
     checkAuth = async (userAuth: validateUserDTO): Promise<response> => {
-        const url = process.env.checkAuthURL!;
-        if (!url) {
-            throw new NullException();
+        try {
+            const url = process.env.checkAuthURL!;
+            if (!url) {
+                throw new NullException();
+            }
+            return await HttpRequestService.postRequest(url, userAuth);
+        } catch (error: unknown) {
+            throw new Error(await catchError(error));
         }
-        return await HttpRequestService.postRequest(url, userAuth);
+        
     }
 
     getUserDetailsThroughEmailId = async (emailIdObject: getUserDTO): Promise<response> => {
-        const url = process.env.getUserDetailsURL!;
-        if (!url) {
-            throw new NullException();
+        try {
+            const url = process.env.getUserDetailsURL!;
+            if (!url) {
+                throw new NullException();
+            }
+            const response = await HttpRequestService.postRequest(url, emailIdObject);
+            return response; 
+        } catch (error: unknown) {
+            throw new Error(await catchError(error));
         }
-        const response = await HttpRequestService.postRequest(url, emailIdObject);
-        return response; 
+        
     }
 
     checkWhetherUserExistsThoughEmailId = async (emailIdObject: getUserDTO): Promise<response> => {
-        const url = process.env.checkExistingUserURL!;
-        if (!url) {
-            throw new NullException();
+        try {
+            const url = process.env.checkExistingUserURL!;
+            if (!url) {
+                throw new NullException();
+            }
+            const response = await HttpRequestService.postRequest(url, emailIdObject);
+            console.log("response1234", response)
+            return response;
+        } catch (error: unknown) {
+            throw new Error(await catchError(error));
         }
-        const response = await HttpRequestService.postRequest(url, emailIdObject);
-        console.log("response1234", response)
-        return response;
     }
 
     createNewAuth = async (encryptedPill: Pill): Promise<response> => {
-        const url = process.env.storeAuthDataURL!;
-        if (!url) {
-            throw new NullException();
+        try {
+            const url = process.env.storeAuthDataURL!;
+            if (!url) {
+                throw new NullException();
+            }
+            return await HttpRequestService.postRequest(url, encryptedPill);
+        } catch (error: unknown) {
+            throw new Error(await catchError(error));
         }
-        return await HttpRequestService.postRequest(url, encryptedPill);
+        
     }
 }
-
-export default new LoginDao();
