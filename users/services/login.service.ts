@@ -1,6 +1,6 @@
 import { OtpService } from '../../common/services/otp.services'
-import EncryptionService from '../../common/services/encryption.services'
-import {Pill} from '../types/pill.type'
+import { EncryptionService } from '../../common/services/encryption.services';
+import { Pill } from '../types/pill.type'
 import { OtpObject } from '../../common/types/otpObject.types';
 import { encryptionData } from '../types/encryptionData.type';
 import { CreateUserDTO } from '../dto/create.user.dto';
@@ -15,10 +15,12 @@ import { validateUserDTO } from '../dto/validate.user.dto';
 export class LoginService {
     otpService: OtpService;
     loginDao: LoginDao;
+    encryptionService: EncryptionService
 
     constructor() {
         this.otpService = new OtpService();
         this.loginDao = new LoginDao();
+        this.encryptionService = new EncryptionService();
     }
 
     private secretKey = process.env.SECRETKEY!
@@ -57,7 +59,7 @@ export class LoginService {
         const userAuth = encryptionData.userAuth;
         const customSalt = encryptionData.customSalt;
         const usernameHash = encryptionData.usernameHash;
-        const encryptedData = await EncryptionService.aesEncryption(key, password);
+        const encryptedData = await this.encryptionService.aesEncryption(key, password);
         const pill = customSalt + encryptedData;
         const authPill = userAuth + pill;
         const data = {
@@ -69,12 +71,12 @@ export class LoginService {
 
     createUserAuth = async (emailId: string, password: string): Promise<encryptionData> => {
         const userAuthObject: encryptionData = {customSalt: "", key: "", usernameHash: "", userAuth: ""};
-        const customSalt = await EncryptionService.md5Encryption(password);
-        const key = await EncryptionService.scrypt(customSalt, this.secretKey);
-        const usernameHash = await EncryptionService.sha256Encryption(emailId);
-        const passwordSalt = (await EncryptionService.sha256Encryption(emailId + this.secretKey)).slice(-22);
-        const passwordHash = (await EncryptionService.scrypt(passwordSalt, this.secretKey)).slice(-40);
-        const userAuth = await EncryptionService.hmac(key, usernameHash+passwordHash);
+        const customSalt = await this.encryptionService.md5Encryption(password);
+        const key = await this.encryptionService.scrypt(customSalt, this.secretKey);
+        const usernameHash = await this.encryptionService.sha256Encryption(emailId);
+        const passwordSalt = (await this.encryptionService.sha256Encryption(emailId + this.secretKey)).slice(-22);
+        const passwordHash = (await this.encryptionService.scrypt(passwordSalt, this.secretKey)).slice(-40);
+        const userAuth = await this.encryptionService.hmac(key, usernameHash+passwordHash);
         userAuthObject.customSalt = customSalt;
         userAuthObject.key = key;
         userAuthObject.userAuth = userAuth;
@@ -84,7 +86,7 @@ export class LoginService {
 
     decryptAuthPill = async (pill: string, key: string, customSalt: string) => {
         const encryptedData = pill.substring(customSalt.length, pill.length);
-        const mySecret = await EncryptionService.aesDecryption(key, encryptedData);
+        const mySecret = await this.encryptionService.aesDecryption(key, encryptedData);
         return mySecret;
     }
 

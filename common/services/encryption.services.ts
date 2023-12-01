@@ -6,7 +6,7 @@ import SHA256 from 'crypto-js/sha256';
 
 import { scryptSync, randomBytes } from 'crypto';
 
-class EncryptionService {
+export class EncryptionService {
     createSalt = async () => {
         return randomBytes(16).toString("hex")
     }
@@ -46,4 +46,4 @@ class EncryptionService {
 
 }
 
-export default new EncryptionService()
+// export default new EncryptionService()
