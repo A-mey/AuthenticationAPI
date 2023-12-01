@@ -68,7 +68,7 @@ class LoginController {
     }
 
     returnUserData = async (req: express.Request, res: express.Response) => {
-        const logger = await logFactoryService.getLog(this.logger, "createUser");
+        const logger = await logFactoryService.getLog(this.logger, "returnUserData");
         let responseData: response = responseTemplates.DEFAULT_ERROR;
         try {
             const emailId = res.locals.loginRequest.emailId;
