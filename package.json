@@ -10,7 +10,7 @@
     "debug": "export DEBUG=* && npm run dev",
     "dev": "export DEPLOY_STAGE=development && tsc && node --unhandled-rejections=strict ./dist/app.js",
     "dev-boilerplate": "export DEPLOY_STAGE=development && concurrently -k \"tsc -p ./ -w\" \"nodemon ./dist/app.js\"",
-    "watch": "export DEPLOY_STAGE=development && ts-node-dev --respawn app.ts"
+    "watch": "export DEPLOY_STAGE=development && ts-node-dev --respawn ./src/app.ts"
   },
   "author": "ameya",
   "license": "ISC",

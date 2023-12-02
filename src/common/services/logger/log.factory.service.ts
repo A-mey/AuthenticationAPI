@@ -1,4 +1,4 @@
-import { LogService } from '../logger/log.service'
+import { LogService } from './log.service'
 
 class LogFactory {
     getLog = async (LogService: LogService, functionName: string): Promise<LogService> => {
