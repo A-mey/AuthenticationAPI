@@ -1,5 +1,5 @@
 import {MailService} from './mailer.services';
-import EncryptionService from './encryption.services';
+import { EncryptionService } from './encryption.services';
 import { OtpObject } from '../types/otpObject.types';
 import { mailBody } from '../types/mailBody.types';
 import { randomNumberGenerator } from '../utils/random.util';
@@ -30,7 +30,8 @@ export class OtpService {
         const ttl = otpValidationTimeInMins * 60 * 1000; //5 Minutes in miliseconds
         const expires = Date.now() + ttl; //timestamp to 5 minutes in the future
         const dataToBeHashed = `${emailId}.${otp}.${expires}`; // phone.otp.expiry_timestamp
-        const hash = await EncryptionService.hmac(key, dataToBeHashed) // creating SHA256 hash of the data
+        const encryptionService: EncryptionService = new EncryptionService();
+        const hash = await encryptionService.hmac(key, dataToBeHashed) // creating SHA256 hash of the data
         const fullHash:string = `${hash}.${expires}`; // Hash.expires, format to send to the user
         return fullHash;
     }
@@ -44,7 +45,8 @@ export class OtpService {
         if(now < parseInt(expires)) {
             // Calculate new hash with the same key and the same algorithm
             const data  = `${emailId}.${otp}.${expires}`;
-            const newCalculatedHash = await EncryptionService.hmac(key, data);
+            const encryptionService: EncryptionService = new EncryptionService();
+            const newCalculatedHash = await encryptionService.hmac(key, data);
             if(newCalculatedHash.toString() === hashValue){
                 isOtpValid = true;
             }

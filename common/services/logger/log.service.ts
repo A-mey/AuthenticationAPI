@@ -1,19 +1,20 @@
 import {get} from "express-http-context";
 
 export class LogService {
-    private tag: string;
+    private className: string;
+    private function: string = "";
 
-    constructor(tag: string) {
-        this.tag = tag;
+    constructor(className: string) {
+        this.className = className;
     }
 
     log = (variableName: string, variableValue?: unknown): void => {
         const requestId = get("requestId");
-        console.log(requestId, `${this.tag}::${variableName}`, JSON.parse(JSON.stringify(variableValue || "")));
+        console.log(requestId, `${this.className}:${this.function}::${variableName}`, JSON.parse(JSON.stringify(variableValue || "")));
     }
 
     addFunctionName = (functionName: string): void => {
-        this.tag = this.tag + ":" + functionName;
+        this.function = functionName;
     }
 
 

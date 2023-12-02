@@ -27,14 +27,15 @@ class LoginController {
             const otpObject: OtpObject = await this.loginService.getOtpObject(emailId);
             logger.log("otpObject", otpObject);
             const otp = otpObject.otp;
+            const fullHashDto = {fullHash: otpObject.fullHash};
             await this.loginService.sendOtpViaMail(emailId, otp);
             const response: response = responseTemplates.OTP_SENT;
+            response.data.data = fullHashDto;
             res.status(response.code).json(response);
         } catch (error: unknown) {
             logger.log("error", await catchError(error));
             res.status(500).json(responseTemplates.DEFAULT_ERROR);
         }
-        
     }
 
     validateOTP = async (req: express.Request, res: express.Response) => {
@@ -80,7 +81,7 @@ class LoginController {
         } catch (error: unknown) {
             logger.log("error", await catchError(error));
         }
-        res.status(responseData.code).json(responseData);        
+        res.status(responseData.code).json(responseData);   
     }
 }
 
