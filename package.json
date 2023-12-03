@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "test": "export DEPLOY_STAGE=development && mocha --timeout 60000 -r ts-node/register 'test/**/*.test.ts' --unhandled-rejections=strict",
+    "test": "export DEPLOY_STAGE=development && mocha --timeout 60000 -r ts-node/register 'src/test/**/*.test.ts' --unhandled-rejections=strict",
     "test-debug": "export DEBUG=* && npm test",
     "start": "tsc && node --unhandled-rejections=strict --es-module-specifier-resolution=node ./dist/app.js",
     "debug": "export DEBUG=* && npm run dev",
