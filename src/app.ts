@@ -1,7 +1,6 @@
 import express from 'express';
 import * as http from 'http';
 import * as dotenv from "dotenv";
-// const dotenvResult = dotenv.config();
 const dotenvResult = dotenv.config({ path: `.env.${process.env.DEPLOY_STAGE}` })
 if (dotenvResult.error) {
     throw dotenvResult.error;
@@ -11,9 +10,7 @@ import * as expressWinston from 'express-winston';
 import cors from 'cors';
 import {CommonRoutesConfig} from './common/common.routes.config';
 import {LoginRoutes} from './users/routes/login.routes.config';
-// import { SipSQL } from './common/services/DAL/sql.service.sip';
-// import { SQLService } from './common/services/DAL/sql.service';
-// import {validationErrorMiddleware} from './common/error/validationErrorMiddleware.error';
+
 import debug from 'debug';
 import helmet from 'helmet';
 import httpContext from "express-http-context";
@@ -91,7 +88,6 @@ app.use(expressWinston.errorLogger({
     )
 }));
 
-// sqlConnections.push(new SipSQL);
 // this is a simple route to make sure everything is working properly
 const runningMessage = `Server running at http://localhost:${port}`;
 app.get('/', (_req: express.Request, res: express.Response) => {
@@ -99,11 +95,6 @@ app.get('/', (_req: express.Request, res: express.Response) => {
 });
 
 app.use(helmet());
-// app.use(validationErrorMiddleware);
-
-
-
-
 
 server.listen(port, () => {
     routes.forEach((route: CommonRoutesConfig) => {
