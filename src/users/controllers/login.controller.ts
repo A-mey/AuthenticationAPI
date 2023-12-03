@@ -15,8 +15,10 @@ import logFactoryService from '../../common/services/logger/log.factory.service'
 
 class LoginController {
     logger: LogService;
+    private loginService: LoginService
 
-    constructor(private loginService: LoginService) {
+    constructor(loginService: LoginService) {
+        this.loginService = loginService;
         this.logger = new LogService("LoginController");
     }
 
