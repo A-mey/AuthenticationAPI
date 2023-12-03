@@ -66,7 +66,7 @@ describe('Login Services', async () => {
         });
     
         it('should return OTP and hash  object', async () => {
-            const otpObject: OtpObject = await loginService.createOTP("amey2p@gmailcom");
+            const otpObject: OtpObject = await loginService.getOtpObject("amey2p@gmailcom");
             // console.log("otpObject", otpObject);
             expect(otpObject).to.have.keys(['otp', 'fullHash']);
             expect(otpObject).to.have.ownProperty('otp').that.have.lengthOf(6);
@@ -74,14 +74,14 @@ describe('Login Services', async () => {
         });
     
         it('should verify whether OTP is valid', async () => {
-            const otpObject: OtpObject = await loginService.createOTP("amey2p@gmailcom");
+            const otpObject: OtpObject = await loginService.getOtpObject("amey2p@gmailcom");
             const checkWhetherOtpIsValid = await loginService.checkWhetherOtpIsValid("amey2p@gmailcom", otpObject.fullHash, otpObject.otp);
             expect(checkWhetherOtpIsValid).to.deep.equal(true);
         })
     
         it('should return false after time out', async () => {
             process.env.OTPVALIDATIONTIME = "0.25";
-            const otpObject: OtpObject = await loginService.createOTP("amey2p@gmailcom");
+            const otpObject: OtpObject = await loginService.getOtpObject("amey2p@gmailcom");
             let checkWhetherOtpIsValid = true;
             const setTimeoutPromise = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout));
             await setTimeoutPromise(20);

@@ -11,104 +11,194 @@ import { LoginDao } from '../dao/login.dao';
 import { getUserDTO } from '../dto/get.user.dto';
 import { catchError } from '../../common/utils/catch.util';
 import { validateUserDTO } from '../dto/validate.user.dto';
+import { LogService } from '../../common/services/logger/log.service';
+import logFactoryService from '../../common/services/logger/log.factory.service';
+import { response } from '../../common/types/response.types';
 
 export class LoginService {
     otpService: OtpService;
     loginDao: LoginDao;
     encryptionService: EncryptionService
+    logger: LogService;
 
     constructor() {
         this.otpService = new OtpService();
         this.loginDao = new LoginDao();
         this.encryptionService = new EncryptionService();
+        this.logger = new LogService("LoginController");
     }
 
     private secretKey = process.env.SECRETKEY!
 
-    authenticateUserData = async (userAuthCheck: validateUserDTO) => {
-        return await this.loginDao.checkAuth(userAuthCheck);
+    authenticateUserData = async (userAuthCheck: validateUserDTO): Promise<response> => {
+        const logger = await logFactoryService.getLog(this.logger, "authenticateUserData");
+        try {
+            const checkAuthResponse = await this.loginDao.checkAuth(userAuthCheck);
+            logger.log("checkAuthResponse", checkAuthResponse);
+            return checkAuthResponse;
+        } catch(error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        }
     }
 
-    getUserDetails = async (emailObject: getUserDTO) => {
-        return await this.loginDao.getUserDetailsThroughEmailId(emailObject);
+    getUserDetails = async (emailObject: getUserDTO): Promise<response> => {
+        const logger = await logFactoryService.getLog(this.logger, "getUserDetails");
+        try {
+            const userDetails = await this.loginDao.getUserDetailsThroughEmailId(emailObject);
+            logger.log("userDetails", userDetails);
+            return userDetails;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        }
     }
 
-    createNewUser = async (createUserData: CreateUserDTO) => {
-        return await this.loginDao.storeUserData(createUserData);
+    createNewUser = async (createUserData: CreateUserDTO): Promise<response> => {
+        const logger = await logFactoryService.getLog(this.logger, "createNewUser");
+        try {
+            const createNewUserResponse = await this.loginDao.storeUserData(createUserData);
+            logger.log("createNewUserResponse", createNewUserResponse);
+            return createNewUserResponse;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        } 
     }
 
-    getOtpObject = async (emailId: string) => {
-        return await this.otpService.createOTPObject(emailId);
+    getOtpObject = async (emailId: string) : Promise<OtpObject> => {
+        const logger = await logFactoryService.getLog(this.logger, "getOtpObject");
+        try {
+            const otpObject = await this.otpService.createOTPObject(emailId);
+            return otpObject;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        } 
     }
 
     sendOtpViaMail = async (emailId: string, otp: string) => {
-        await this.otpService.sendOtpMail(emailId, otp!);
+        const logger = await logFactoryService.getLog(this.logger, "sendOtpViaMail");
+        try {
+            await this.otpService.sendOtpMail(emailId, otp!);
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        } 
     }
     
     checkWhetherOtpIsValid = async (emailId: string, hash: string, otp: string) => {
-        return this.otpService.verifyOTP(emailId, hash, otp);
-    }
-
-    createOTP = async (email: string): Promise<OtpObject> => {
-        return this.otpService.createOTPObject(email);
+        const logger = await logFactoryService.getLog(this.logger, "checkWhetherOtpIsValid");
+        try {
+            const isOtpValid = await this.otpService.verifyOTP(emailId, hash, otp);
+            return isOtpValid;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        } 
     }
 
     createAuthPill = async (emailId: string, password: string): Promise<Pill> => {
-        const encryptionData: encryptionData = await this.createUserAuth(emailId, password);
-        const key = encryptionData.key;
-        const userAuth = encryptionData.userAuth;
-        const customSalt = encryptionData.customSalt;
-        const usernameHash = encryptionData.usernameHash;
-        const encryptedData = await this.encryptionService.aesEncryption(key, password);
-        const pill = customSalt + encryptedData;
-        const authPill = userAuth + pill;
-        const data = {
-            AUTHPILL: authPill,
-            USERNAMEHASH: usernameHash
-        }
-        return data;
+        const logger = await logFactoryService.getLog(this.logger, "createAuthPill");
+        try {
+            const encryptionData: encryptionData = await this.createUserAuth(emailId, password);
+            const key = encryptionData.key;
+            const userAuth = encryptionData.userAuth;
+            const customSalt = encryptionData.customSalt;
+            const usernameHash = encryptionData.usernameHash;
+            const encryptedData = await this.encryptionService.aesEncryption(key, password);
+            const pill = customSalt + encryptedData;
+            const authPill = userAuth + pill;
+            const data = {
+                AUTHPILL: authPill,
+                USERNAMEHASH: usernameHash
+            }
+            return data;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        } 
+        
     }
 
     createUserAuth = async (emailId: string, password: string): Promise<encryptionData> => {
-        const userAuthObject: encryptionData = {customSalt: "", key: "", usernameHash: "", userAuth: ""};
-        const customSalt = await this.encryptionService.md5Encryption(password);
-        const key = await this.encryptionService.scrypt(customSalt, this.secretKey);
-        const usernameHash = await this.encryptionService.sha256Encryption(emailId);
-        const passwordSalt = (await this.encryptionService.sha256Encryption(emailId + this.secretKey)).slice(-22);
-        const passwordHash = (await this.encryptionService.scrypt(passwordSalt, this.secretKey)).slice(-40);
-        const userAuth = await this.encryptionService.hmac(key, usernameHash+passwordHash);
-        userAuthObject.customSalt = customSalt;
-        userAuthObject.key = key;
-        userAuthObject.userAuth = userAuth;
-        userAuthObject.usernameHash = usernameHash;
-        return userAuthObject;
+        const logger = await logFactoryService.getLog(this.logger, "authenticateUserData");
+        try {
+            const userAuthObject: encryptionData = {customSalt: "", key: "", usernameHash: "", userAuth: ""};
+            const customSalt = await this.encryptionService.md5Encryption(password);
+            const key = await this.encryptionService.scrypt(customSalt, this.secretKey);
+            const usernameHash = await this.encryptionService.sha256Encryption(emailId);
+            const passwordSalt = (await this.encryptionService.sha256Encryption(emailId + this.secretKey)).slice(-22);
+            const passwordHash = (await this.encryptionService.scrypt(passwordSalt, this.secretKey)).slice(-40);
+            const userAuth = await this.encryptionService.hmac(key, usernameHash+passwordHash);
+            userAuthObject.customSalt = customSalt;
+            userAuthObject.key = key;
+            userAuthObject.userAuth = userAuth;
+            userAuthObject.usernameHash = usernameHash;
+            return userAuthObject;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        } 
+        
     }
 
     decryptAuthPill = async (pill: string, key: string, customSalt: string) => {
-        const encryptedData = pill.substring(customSalt.length, pill.length);
-        const mySecret = await this.encryptionService.aesDecryption(key, encryptedData);
-        return mySecret;
+        const logger = await logFactoryService.getLog(this.logger, "decryptAuthPill");
+        try {
+            const encryptedData = pill.substring(customSalt.length, pill.length);
+            const mySecret = await this.encryptionService.aesDecryption(key, encryptedData);
+            return mySecret;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        } 
+        
     }
 
     createUserData = async (createUserInput: createUserInput) : Promise<CreateUserDTO> => {
-        const emailId = createUserInput.EMAILID;
-        const password = createUserInput.PASSWORD;
-        const encryptedPill: Pill = await this.createAuthPill(emailId, password);
-        const userData: User = {TITLE: createUserInput.TITLE, EMAILID: createUserInput.EMAILID, FIRSTNAME: createUserInput.FIRSTNAME, LASTNAME: createUserInput.LASTNAME, GENDER: createUserInput.GENDER, DOB: createUserInput.DOB}
-        const createUserData: CreateUserDTO = {USER: userData, AUTH: encryptedPill};
-        return createUserData;
+        const logger = await logFactoryService.getLog(this.logger, "createUserData");
+        try {
+            const emailId = createUserInput.EMAILID;
+            const password = createUserInput.PASSWORD;
+            const encryptedPill: Pill = await this.createAuthPill(emailId, password);
+            const userData: User = {TITLE: createUserInput.TITLE, EMAILID: createUserInput.EMAILID, FIRSTNAME: createUserInput.FIRSTNAME, LASTNAME: createUserInput.LASTNAME, GENDER: createUserInput.GENDER, DOB: createUserInput.DOB}
+            const createUserData: CreateUserDTO = {USER: userData, AUTH: encryptedPill};
+            return createUserData;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        }
     }
 
     getOldPassword = async (encryptionData: encryptionData) : Promise<string> => {
-        const pill = encryptionData.authPill!.substring(encryptionData.userAuth.length, encryptionData.authPill!.length);
-        if (!pill) {
-            throw new NullException();
-        }
-        const oldPassword = await this.decryptAuthPill(pill, encryptionData.key, encryptionData.customSalt);
-        return oldPassword;
+        const logger = await logFactoryService.getLog(this.logger, "getOldPassword");
+        try {
+            const pill = encryptionData.authPill!.substring(encryptionData.userAuth.length, encryptionData.authPill!.length);
+            if (!pill) {
+                throw new NullException();
+            }
+            const oldPassword = await this.decryptAuthPill(pill, encryptionData.key, encryptionData.customSalt);
+            return oldPassword;
+        } catch (error: unknown) {
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        }   
     }
 
     checkWhetherUserExists = async (emailId: string) => {
+        const logger = await logFactoryService.getLog(this.logger, "checkWhetherUserExists");
         try {
             let proceed = false;
             const emailIdObject: getUserDTO = { EMAILID: emailId };
@@ -118,8 +208,10 @@ export class LoginService {
             }
             return proceed;
         } catch (error: unknown) {
-            throw new Error(await catchError(error));
-        }
+            const errorMsg = await catchError(error);
+            logger.log("error", errorMsg);
+            throw new Error(errorMsg);
+        } 
         
     }
 }
