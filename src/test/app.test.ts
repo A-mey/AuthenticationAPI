@@ -67,7 +67,6 @@ describe('Login Services', async () => {
     
         it('should return OTP and hash  object', async () => {
             const otpObject: OtpObject = await loginService.getOtpObject("amey2p@gmailcom");
-            // console.log("otpObject", otpObject);
             expect(otpObject).to.have.keys(['otp', 'fullHash']);
             expect(otpObject).to.have.ownProperty('otp').that.have.lengthOf(6);
             expect(otpObject).to.have.ownProperty('fullHash').that.have.lengthOf(78);
