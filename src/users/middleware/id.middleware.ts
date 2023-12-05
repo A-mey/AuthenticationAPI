@@ -1,21 +1,18 @@
 import { Request, Response, NextFunction } from "express";
-import {set} from "express-http-context";
-import { GuidService } from "../../common/services/guid.services"
 import { catchError } from "../../common/utils/catch.util";
+import { RequestIdService } from '../../common/services/requestId/requestId.service';
 
 class IdMiddleware {
-    private guid: GuidService;
+    private requestIdService: RequestIdService;
 
     constructor() {
-        this.guid = new GuidService();
+        this.requestIdService = new RequestIdService();
     }
 
     createRequestId = async(req: Request, _res: Response, next: NextFunction) => {
         try {
-            const sessionId = req.header("SESSIONID");
-            const guid = this.guid.getGuid();
-            const requestId = sessionId + "_" + guid;
-            set("requestId", requestId);
+            const sessionId = req.header("SESSIONID")!;
+            await this.requestIdService.setRequestId(sessionId);
             next();
         } catch(error: unknown) {
             const errorMsg = await catchError(error);
