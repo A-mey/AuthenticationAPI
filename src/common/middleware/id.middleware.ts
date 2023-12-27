@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { catchError } from "../../common/utils/catch.util";
-import { RequestIdService } from '../../common/services/requestId/requestId.service';
+import { catchError } from "../utils/catch.util";
+import { RequestIdService } from '../services/requestId/requestId.service';
 
 class IdMiddleware {
     private requestIdService: RequestIdService;

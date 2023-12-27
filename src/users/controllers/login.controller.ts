@@ -13,7 +13,7 @@ import { LogService } from '../../common/services/logger/log.service'
 import logFactoryService from '../../common/services/logger/log.factory.service';
 // const log: debug.IDebugger = debug('app:users-controller');
 
-class LoginController {
+export class LoginController {
     logger: LogService;
     private loginService: LoginService
 
@@ -86,5 +86,3 @@ class LoginController {
         res.status(responseData.code).json(responseData);   
     }
 }
-
-export default new LoginController(new LoginService());

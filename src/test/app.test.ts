@@ -1,22 +1,11 @@
 import { server } from '../app';
 import nock from 'nock';
 import { expect } from 'chai';
-// import sinon from 'sinon';
 import { LoginService } from '../users/services/login.service';
 import { createUserInput } from '../users/types/create.user.input.type';
-// import supertest from 'supertest';
-
-// import { Response } from '../common/types/response.types';
-
-// import loginDao from '../users/dao/login.dao';
-
-// import otpServices from '../common/services/otp.services';
-
-// import {MailService} from '../common/services/mailer.services';
 import { OtpObject } from '../common/types/otpObject.types';
 
 describe('Login Services', async () => {
-    // let request: supertest.SuperAgentTest;
     beforeEach(() => {
         nock('http://localhost:2001')
             .post('/checkUser', { EMAILID: 'notfound@gmail.com' })
