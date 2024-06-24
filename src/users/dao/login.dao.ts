@@ -8,9 +8,10 @@ import { Pill } from '../types/pill.type';
 import { getUserDTO } from '../dto/get.user.dto';
 import { NullException } from '../../common/error/exceptions/null.exception.error';
 import { catchError } from '../../common/utils/catch.util';
+import { ILoginDaoInterface } from '../interfaces/ILogin.dao.interfaces';
 
 
-export class LoginDao {
+export class LoginDao implements ILoginDaoInterface {
 
     storeUserData = async (CreateUser: CreateUserDTO): Promise<response> => {
         try {
@@ -75,7 +76,6 @@ export class LoginDao {
             return await HttpRequestService.postRequest(url, encryptedPill);
         } catch (error: unknown) {
             throw new Error(await catchError(error));
-        }
-        
+        } 
     }
 }

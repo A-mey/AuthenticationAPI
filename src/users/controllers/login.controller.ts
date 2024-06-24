@@ -11,9 +11,10 @@ import { catchError } from '../../common/utils/catch.util';
 import responseTemplates from '../../common/constants/response.template.constants';
 import { LogService } from '../../common/services/logger/log.service'
 import logFactoryService from '../../common/services/logger/log.factory.service';
+import { ILoginControllerInterface } from '../interfaces/ILogin.controller.interfaces';
 // const log: debug.IDebugger = debug('app:users-controller');
 
-export class LoginController {
+export class LoginController implements ILoginControllerInterface {
     logger: LogService;
     private loginService: LoginService
 

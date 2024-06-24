@@ -14,8 +14,9 @@ import { validateUserDTO } from '../dto/validate.user.dto';
 import { LogService } from '../../common/services/logger/log.service';
 import logFactoryService from '../../common/services/logger/log.factory.service';
 import { response } from '../../common/types/response.types';
+import { ILoginServiceInterface } from '../interfaces/ILogin.service.interfaces';
 
-export class LoginService {
+export class LoginService implements ILoginServiceInterface {
     otpService: OtpService;
     loginDao: LoginDao;
     encryptionService: EncryptionService
@@ -81,7 +82,7 @@ export class LoginService {
         } 
     }
 
-    sendOtpViaMail = async (emailId: string, otp: string) => {
+    sendOtpViaMail = async (emailId: string, otp: string) : Promise<void> => {
         const logger = await logFactoryService.getLog(this.logger, "sendOtpViaMail");
         try {
             await this.otpService.sendOtpMail(emailId, otp!);
@@ -92,7 +93,7 @@ export class LoginService {
         } 
     }
     
-    checkWhetherOtpIsValid = async (emailId: string, hash: string, otp: string) => {
+    checkWhetherOtpIsValid = async (emailId: string, hash: string, otp: string) : Promise<boolean> => {
         const logger = await logFactoryService.getLog(this.logger, "checkWhetherOtpIsValid");
         try {
             const isOtpValid = await this.otpService.verifyOTP(emailId, hash, otp);
@@ -151,7 +152,7 @@ export class LoginService {
         
     }
 
-    decryptAuthPill = async (pill: string, key: string, customSalt: string) => {
+    decryptAuthPill = async (pill: string, key: string, customSalt: string) : Promise<string> => {
         const logger = await logFactoryService.getLog(this.logger, "decryptAuthPill");
         try {
             const encryptedData = pill.substring(customSalt.length, pill.length);
@@ -197,7 +198,7 @@ export class LoginService {
         }   
     }
 
-    checkWhetherUserExists = async (emailId: string) => {
+    checkWhetherUserExists = async (emailId: string) : Promise<boolean> => {
         const logger = await logFactoryService.getLog(this.logger, "checkWhetherUserExists");
         try {
             let proceed = false;
