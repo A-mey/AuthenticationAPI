@@ -27,7 +27,7 @@ const debugLog: debug.IDebugger = debug('app');
 app.use(express.json());
 
 // here we are adding middleware to allow cross-origin requests
-app.use(cors());
+app.use(cors({origin: "localhost:4000"}));
 
 app.use(httpContext.middleware);
 
